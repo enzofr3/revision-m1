@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EM Normandie M1 - Révision Complète</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: #e0e0e0; min-height: 100vh; overflow-x: hidden; }
+        .lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); display: flex; justify-content: center; align-items: center; z-index: 10000; flex-direction: column; gap: 40px; }
+        .lock-screen.hidden { display: none; }
+        .lock-container { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 60px; text-align: center; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); min-width: 350px; }
+        .lock-title { font-size: 32px; font-weight: 700; margin-bottom: 30px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .lock-input { width: 100%; padding: 15px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; color: #e0e0e0; font-size: 16px; letter-spacing: 3px; text-align: center; }
+        .lock-input::placeholder { color: rgba(224, 224, 224, 0.5); }
+        .lock-button { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .lock-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4); }
+        .main-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-right: 1px solid rgba(255, 255, 255, 0.1); padding: 30px 0; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+        .sidebar-header { padding: 0 20px 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 30px; }
+        .sidebar-logo { font-size: 18px; font-weight: 700; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .subject-item { padding: 12px 20px; margin: 8px 10px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; border-left: 3px solid transparent; font-size: 14px; }
+        .subject-item:hover { background: rgba(255, 255, 255, 0.1); border-left-color: #667eea; }
+        .subject-item.active { background: rgba(102, 126, 234, 0.2); border-left-color: #667eea; color: #667eea; }
+        .menu-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .menu-section-title { padding: 0 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; color: rgba(224, 224, 224, 0.5); margin-bottom: 15px; }
+        .content { margin-left: 280px; padding: 40px; flex: 1; }
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-header { margin-bottom: 40px; }
+        .section-title { font-size: 32px; font-weight: 700; margin-bottom: 10px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .section-subtitle { font-size: 16px; color: rgba(224, 224, 224, 0.6); }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .tab-button { padding: 12px 24px; background: none; border: none; color: rgba(224, 224, 224, 0.6); cursor: pointer; font-size: 14px; font-weight: 500; border-bottom: 2px solid transparent; transition: all 0.3s ease; margin-bottom: -1px; }
+        .tab-button:hover { color: #e0e0e0; }
+        .tab-button.active { color: #667eea; border-bottom-color: #667eea; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        .card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 15px; padding: 25px; margin-bottom: 20px; transition: all 0.3s ease; }
+        .card:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+        .card-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #667eea; }
+        .card-content { font-size: 14px; line-height: 1.8; color: rgba(224, 224, 224, 0.85); }
+        .flashcard { background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2)); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 15px; padding: 40px; min-height: 300px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; text-align: center; margin-bottom: 20px; }
+        .flashcard:hover { transform: translateY(-5px); border-color: rgba(102, 126, 234, 0.5); }
+        .flashcard-content { font-size: 16px; line-height: 1.6; }
+        .flashcard-label { font-size: 12px; color: rgba(224, 224, 224, 0.5); margin-bottom: 20px; }
+        .quiz-container { max-width: 800px; }
+        .question-card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 15px; padding: 30px; margin-bottom: 30px; }
+        .question-number { font-size: 12px; color: rgba(224, 224, 224, 0.5); margin-bottom: 10px; }
+        .question-text { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #e0e0e0; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option { padding: 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; cursor: pointer; transition: all 0.3s ease; color: #e0e0e0; }
+        .option:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(102, 126, 234, 0.5); }
+        .option.selected { background: rgba(102, 126, 234, 0.3); border-color: #667eea; }
+        .option.correct { background: rgba(76, 175, 80, 0.3); border-color: #4caf50; }
+        .option.incorrect { background: rgba(244, 67, 54, 0.3); border-color: #f44336; }
+        .quiz-result { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 15px; padding: 40px; text-align: center; margin-top: 30px; }
+        .result-score { font-size: 48px; font-weight: 700; margin-bottom: 10px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .btn { padding: 12px 24px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4); }
+        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
+        .subject-card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 15px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .subject-card:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(102, 126, 234, 0.5); transform: translateY(-5px); }
+        .subject-card-number { font-size: 32px; font-weight: 700; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; }
+        .exam-instructions { background: rgba(102, 126, 234, 0.1); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 10px; padding: 20px; margin-bottom: 30px; font-size: 14px; line-height: 1.6; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(102, 126, 234, 0.3); border-radius: 4px; }
+        @media (max-width: 1024px) { .sidebar { width: 220px; } .content { margin-left: 220px; padding: 30px; } }
+        @media (max-width: 768px) { .sidebar { position: fixed; left: -280px; transition: left 0.3s ease; z-index: 200; } .content { margin-left: 0; padding: 20px; } .section-title { font-size: 24px; } .home-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="lock-screen" id="lockScreen">
+        <div class="lock-container">
+            <div class="lock-title">🔐 Révision Sécurisée</div>
+            <input type="password" class="lock-input" id="passwordInput" placeholder="Entrez le mot de passe" autocomplete="off">
+            <button class="lock-button" onclick="checkPassword()">Déverrouiller</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">📚 EM Normandie M1</div>
+                <div class="menu-section-title">Révision Complète</div>
+            </div>
+            <div class="subject-item" onclick="showHome()" id="homeBtn">🏠 Accueil</div>
+            <div class="menu-section">
+                <div class="menu-section-title">Matières</div>
+                <div class="subject-item" onclick="showSubject(0)">1. GRH pour Manager</div>
+                <div class="subject-item" onclick="showSubject(1)">2. Droit Int'l</div>
+                <div class="subject-item" onclick="showSubject(2)">3. Leadership</div>
+                <div class="subject-item" onclick="showSubject(3)">4. Marketing</div>
+                <div class="subject-item" onclick="showSubject(4)">5. Géoéconomie</div>
+                <div class="subject-item" onclick="showSubject(5)">6. Change Mgmt</div>
+                <div class="subject-item" onclick="showSubject(6)">7. Performance</div>
+                <div class="subject-item" onclick="showSubject(7)">8. Qual. Data</div>
+                <div class="subject-item" onclick="showSubject(8)">9. Quant. Data</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="homeSection" class="content-section active">
+                <div class="section-header">
+                    <div class="section-title">Bienvenue en Révision</div>
+                    <div class="section-subtitle">Préparez vos 9 examens avec ce guide complet</div>
+                </div>
+                <div class="home-grid">
+                    <div class="subject-card" onclick="showSubject(0)"><div class="subject-card-number">1</div><div>GRH pour Manager</div><div class="menu-section-title">1h30 - /20</div></div>
+                    <div class="subject-card" onclick="showSubject(1)"><div class="subject-card-number">2</div><div>Droit International</div><div class="menu-section-title">1h30 - /20</div></div>
+                    <div class="subject-card" onclick="showSubject(2)"><div class="subject-card-number">3</div><div>Leadership & Négociation</div><div class="menu-section-title">2h - /20</div></div>
+                    <div class="subject-card" onclick="showSubject(3)"><div class="subject-card-number">4</div><div>Marketing Relationnel</div><div class="menu-section-title">2h - /20</div></div>
+                    <div class="subject-card" onclick="showSubject(4)"><div class="subject-card-number">5</div><div>Géoéconomie</div><div class="menu-section-title">2h - /20</div></div>
+                    <div class="subject-card" onclick="showSubject(5)"><div class="subject-card-number">6</div><div>Change Management</div><div class="menu-section-title">2h - /20</div></div>
+                    <div class="subject-card" onclick="showSubject(6)"><div class="subject-card-number">7</div><div>Performance Mgmt</div><div class="menu-section-title">2h - /20</div></div>
+                    <div class="subject-card" onclick="showSubject(7)"><div class="subject-card-number">8</div><div>Analyse Qualitative</div><div class="menu-section-title">1h30 - /20</div></div>
+                    <div class="subject-card" onclick="showSubject(8)"><div class="subject-card-number">9</div><div>Analyse Quantitative</div><div class="menu-section-title">2h - /20</div></div>
+                </div>
+            </div>
+
+            <!-- SUBJECT 1: GRH -->
+            <div id="subject0" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">1. GRH pour Manager</div>
+                    <div class="section-subtitle">1h30 - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course0')">Cours</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard0')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz0')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam0')">Examen</button>
+                </div>
+                <div id="course0" class="tab-content active">
+                    <div class="card"><div class="card-title">Recrutement</div><div class="card-content"><strong>Processus:</strong> Analyse besoins → Sourcing → Sélection → Intégration<br><strong>Biais:</strong> Effet halo (caractéristique positive influence perception globale), Biais de similarité (préférence pour candidats similaires), Discrimination (directe/indirecte)<br><strong>Entretiens:</strong> Structuré (questions identiques, objectif) vs Non-structuré (flexible, subjectif)</div></div>
+                    <div class="card"><div class="card-title">Rémunération</div><div class="card-content"><strong>Types:</strong> Fixe (stable) vs Variable (bonus, primes)<br><strong>Équité:</strong> Interne (cohérence entre employés) vs Externe (compétitivité marché)<br><strong>Théorie d'Adams:</strong> Satisfaction = Contributions/Récompenses. Inéquité → Insatisfaction et départ</div></div>
+                    <div class="card"><div class="card-title">Formation et GPEC</div><div class="card-content"><strong>Plan formation:</strong> Diagnostic → Objectifs → Sélection formats → Évaluation impact<br><strong>GPEC:</strong> Gestion Prévisionnelle des Emplois et Compétences - Anticipe besoins futurs, réduit turnover<br><strong>E-learning:</strong> Formation flexible 24/7, réduit coûts déplacement</div></div>
+                    <div class="card"><div class="card-title">RSE et GRH</div><div class="card-content"><strong>Diversité:</strong> Respect différences, créativité, innovation<br><strong>Égalité:</strong> Parité femmes-hommes, absence de discrimination<br><strong>Plafond de verre:</strong> Barrière invisible empêchant femmes à la direction<br><strong>Mobilité interne:</strong> Changement de poste, rétention talents</div></div>
+                    <div class="card"><div class="card-title">Diagnostic RH</div><div class="card-content"><strong>Forces/Faiblesses:</strong> Talents, culture, processus, engagement<br><strong>Recommandations:</strong> Priorités, plans d'action, budget, KPIs<br><strong>Cohérence:</strong> Politique RH doit supporter stratégie d'entreprise</div></div>
+                </div>
+                <div id="flashcard0" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Effet de Halo</div><div class="flashcard-content">Une caractéristique positive influence la perception globale. Un candidat beau est perçu comme plus compétent.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Biais de Similarité</div><div class="flashcard-content">Préférence pour candidats qui nous ressemblent (même école, origine, âge), réduit diversité.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">GPEC</div><div class="flashcard-content">Gestion Prévisionnelle des Emplois et Compétences. Anticipe besoins futurs, identifie écarts, aligne avec stratégie.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Théorie Équité Adams</div><div class="flashcard-content">Satisfaction = Contributions/Récompenses. Inéquité ressentie → insatisfaction, démotivation, départ.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Plafond de Verre</div><div class="flashcard-content">Barrière invisible empêchant femmes d'accéder à la direction. Causé par préjugés, stéréotypes, obligations familiales.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Équité Interne vs Externe</div><div class="flashcard-content">Interne: salaires cohérents entre employés même niveau. Externe: compétitivité avec le marché.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Mobilité Interne</div><div class="flashcard-content">Possibilité de changer de poste au sein de l'entreprise. Rétient talents, réduit coûts recrutement externe.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Entretien Structuré</div><div class="flashcard-content">Questions identiques pour tous les candidats, évaluation objective, comparable, plus prédictif de la performance.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Discrimination</div><div class="flashcard-content">Directe: traitement différent basé sur caractéristique protégée. Indirecte: règle neutre mais désavantageuse pour groupe.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">E-Learning</div><div class="flashcard-content">Formation en ligne flexible 24/7. Permet autoformation au rythme de l'apprenant. Réduit coûts déplacement. Nécessite discipline.</div></div></div>
+                </div>
+                <div id="quiz0" class="tab-content"><div class="quiz-container" id="quiz0-container"></div><button class="btn btn-primary" onclick="submitQuiz(0)" style="margin-top: 20px;">Soumettre</button></div>
+                <div id="exam0" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> Diagnostic forces/faiblesses (6pts) + Recommandations hiérarchisées (10pts) + Cohérence stratégie (4pts). Durée: 1h30</div><div id="exam0-container"></div><button class="btn btn-primary" onclick="submitExam(0)" style="margin-top: 20px;">Soumettre</button></div>
+            </div>
+
+            <!-- SUBJECT 2: DROIT INTERNATIONAL -->
+            <div id="subject1" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">2. Droit International des Affaires</div>
+                    <div class="section-subtitle">1h30 - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course1')">Cours</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard1')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz1')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam1')">Examen</button>
+                </div>
+                <div id="course1" class="tab-content active">
+                    <div class="card"><div class="card-title">Convention de Vienne (CVIM/CISG) 1980</div><div class="card-content"><strong>Champ d'application:</strong> Ventes internationales de marchandises entre pays signataires<br><strong>Obligations vendeur:</strong> Livraison conforme (qualité, quantité), respect délai, garantie contre vices cachés<br><strong>Obligations acheteur:</strong> Paiement du prix, prise de livraison<br><strong>Non-conformité:</strong> Doit être notifiée dans délai raisonnable, sinon acceptation implicite<br><strong>Exonération:</strong> Article 79 - Force majeure libère de responsabilité si événement imprévisible et inévitable</div></div>
+                    <div class="card"><div class="card-title">INCOTERMS 2020</div><div class="card-content"><strong>Répartition risques et coûts:</strong> 11 incoterms règlent transfert de risques et répartition des frais<br><strong>EXW:</strong> Usine vendeur (risque acheteur dès entrepôt)<br><strong>FCA:</strong> Franco transporteur<br><strong>FAS:</strong> Franco le long du navire<br><strong>FOB:</strong> Franco bord<br><strong>CFR/CIF:</strong> Coût/Assurance-Fret<br><strong>CPT/CIP:</strong> Port payé/Port payé assurance comprise<br><strong>DAP:</strong> Rendu au point convenu<br><strong>DPU:</strong> Rendu droits acquittés au point de déchargement<br><strong>DDP:</strong> Rendu droits acquittés au point destination (risque vendeur maximum)</div></div>
+                    <div class="card"><div class="card-title">Transfert de Propriété</div><div class="card-content"><strong>Point clé:</strong> NON réglé par la CVIM. Relève du droit national du vendeur ou acheteur (selon contrat)<br><strong>Importance:</strong> Détermine qui assume les risques de perte ou détérioration</div></div>
+                    <div class="card"><div class="card-title">Clauses Attributives de Juridiction</div><div class="card-content"><strong>Validité:</strong> Clauses spécifiant le tribunal compétent sont valides si acceptées par les parties<br><strong>Règlement Bruxelles I bis:</strong> Détermine juridiction en Europe. Tribunal demandeur ou lieu livraison pour contrats<br><strong>Exécution:</strong> Jugement rendu dans un pays peut être exécuté dans autre pays</div></div>
+                    <div class="card"><div class="card-title">Choix de la Loi Applicable</div><div class="card-content"><strong>Liberté contractuelle:</strong> Parties peuvent choisir la loi (Rome I). Sinon loi du vendeur s'applique<br><strong>Par défaut:</strong> Loi du pays où vendeur réside habituellement</div></div>
+                    <div class="card"><div class="card-title">Arbitrage International</div><div class="card-content"><strong>Avantages:</strong> Confidentialité, expertise arbitres, neutralité, rapidité, exécution garantie par Convention NY 1958<br><strong>Processus:</strong> Parties nomment arbitres, audience, sentence arbitrale<br><strong>Exécution:</strong> Plus facile que jugement classique entre pays</div></div>
+                    <div class="card"><div class="card-title">Transport Maritime</div><div class="card-content"><strong>Convention de Hambourg:</strong> Règle responsabilité transporteur maritime<br><strong>Limitation responsabilité:</strong> Par colis (2,5 x valeur facturée) ou par kg (835 USD/tonne)<br><strong>Délai:</strong> Transporteur responsable des dommages pendant transport</div></div>
+                </div>
+                <div id="flashcard1" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">CVIM</div><div class="flashcard-content">Convention de Vienne 1980. Réglemente ventes internationales marchandises. Obligations vendeur/acheteur, garantie, non-conformité.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">FOB</div><div class="flashcard-content">Franco à bord. Vendeur paie transport jusqu'à quai d'embarquement. Risque passe acheteur au moment chargement navire.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">CIF</div><div class="flashcard-content">Coût Assurance Fret. Vendeur paie transport et assurance jusqu'à port destination. Risque passe à acheteur à chargement.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">DDP</div><div class="flashcard-content">Rendu droits acquittés. Maximum responsabilité vendeur. Vendeur paie tout jusqu'à livraison point convenu destination.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Transfert Propriété</div><div class="flashcard-content">Non réglé par CVIM. Relève droit national. Parties peuvent convenir moment du transfert (ex: paiement, livraison).</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Article 79 CVIM</div><div class="flashcard-content">Force majeure. Exonère vendeur/acheteur responsabilité si événement imprévisible et inévitable empêche exécution.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Convention NY 1958</div><div class="flashcard-content">Reconnaît et exécute sentences arbitrales. Permet arbitrage international efficace entre pays.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Règlement Bruxelles I bis</div><div class="flashcard-content">Détermine juridiction en Europe. Tribunal demandeur ou lieu de livraison. Permet exécution jugement dans autre pays.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Arbitrage vs Jugement</div><div class="flashcard-content">Arbitrage: Confidentiel, rapide, neutre, experts. Jugement: Public, long, droit national. Arbitrage plus facile à exécuter.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Rome I</div><div class="flashcard-content">Détermine loi applicable contrats. Parties liberté de choisir. Par défaut: loi résidence habituelle vendeur.</div></div></div>
+                </div>
+                <div id="quiz1" class="tab-content"><div class="quiz-container" id="quiz1-container"></div><button class="btn btn-primary" onclick="submitQuiz(1)" style="margin-top: 20px;">Soumettre</button></div>
+                <div id="exam1" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> Case study (15pts) + 5 questions de cours (5pts). Durée: 1h30</div><div id="exam1-container"></div><button class="btn btn-primary" onclick="submitExam(1)" style="margin-top: 20px;">Soumettre</button></div>
+            </div>
+
+            <!-- SUBJECT 3: LEADERSHIP & NEGOTIATION -->
+            <div id="subject2" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">3. Leadership & Négociation Collaborative</div>
+                    <div class="section-subtitle">2h - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course2')">Cours</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard2')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz2')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam2')">Examen</button>
+                </div>
+                <div id="course2" class="tab-content active">
+                    <div class="card"><div class="card-title">Styles de Conflit (Thomas-Kilmann)</div><div class="card-content"><strong>Compétition:</strong> Gagne/Perd. Assertif, non-coopératif. Quand: enjeux importants, décisions rapides nécessaires<br><strong>Évitement:</strong> Perd/Perd. Ni assertif ni coopératif. Quand: conflit mineur, manque d'information<br><strong>Accommodation:</strong> Perd/Gagne. Coopératif, non-assertif. Quand: relation importante, enjeu mineur<br><strong>Compromis:</strong> Perd/Perd partiellement. Modéré sur deux dimensions. Solution intermédiaire<br><strong>Collaboration:</strong> Gagne/Gagne. Assertif et coopératif. Recherche solution satisfaisant tous. Idéal mais consomme temps</div></div>
+                    <div class="card"><div class="card-title">Communication de Soutien vs Non-Soutenante</div><div class="card-content"><strong>Soutenante:</strong> Orientée problème (pas à la personne), Descriptive (pas évaluative), Congruente (verbale cohérente au non-verbal), Validante (reconnaît perspective autre), Spécifique (détails concrets), Conjointe (inclusive)<br><strong>Non-soutenante:</strong> Critique personnelle, jugement, incohérence, rejet émotionnel, généralités vagues, autoritaire</div></div>
+                    <div class="card"><div class="card-title">Intelligence Émotionnelle (Goleman)</div><div class="card-content"><strong>5 Composantes:</strong><br>1. <strong>Conscience de soi:</strong> Reconnaissance émotions propres, impact sur autres<br>2. <strong>Maîtrise de soi:</strong> Régulation émotions, réponses adaptées<br>3. <strong>Motivation:</strong> Drive interne vers objectifs<br>4. <strong>Empathie:</strong> Reconnaissance et compréhension émotions des autres<br>5. <strong>Compétences sociales:</strong> Relations interpersonnelles, influence, communication</div></div>
+                    <div class="card"><div class="card-title">Pouvoir et Influence (French & Raven)</div><div class="card-content"><strong>Pouvoir Légitime:</strong> Basé sur position officielle (manager → subordiné)<br><strong>Pouvoir de Récompense:</strong> Capacité donner récompenses (primes, promotion)<br><strong>Pouvoir Coercitif:</strong> Capacité punir (réprimande, licenciement)<br><strong>Pouvoir Expert:</strong> Basé sur compétences/connaissance reconnue<br><strong>Pouvoir Référent:</strong> Basé sur admiration/identification. Leadership transformationnel<br><strong>Pouvoir Informationnel:</strong> Accès/contrôle information</div></div>
+                    <div class="card"><div class="card-title">Leadership Transformationnel vs Transactionnel</div><div class="card-content"><strong>Transformationnel:</strong> Vision inspirante, motive dépassement soi, long terme, développement personne, changement organisationnel. Charismatique<br><strong>Transactionnel:</strong> Échange (récompense/punition), court terme, exécution tâches, stabilité. Contrôle/suivi</div></div>
+                </div>
+                <div id="flashcard2" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Style Collaboration</div><div class="flashcard-content">Gagne/Gagne. Assertif et coopératif. Recherche solution satisfaisant tous les parties. Idéal mais consomme temps.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Style Compétition</div><div class="flashcard-content">Gagne/Perd. Assertif, non-coopératif. Utilisé quand enjeux importants ou décisions rapides nécessaires.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Communication Soutenante</div><div class="flashcard-content">Orientée problème, descriptive, congruente, validante, spécifique, conjointe. Reconnaît perspective autre.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Intelligence Émotionnelle</div><div class="flashcard-content">Conscience de soi, maîtrise de soi, motivation, empathie, compétences sociales. Clé pour leadership efficace.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Pouvoir Expert</div><div class="flashcard-content">Basé sur compétences et connaissances reconnues. Influence basée sur capacité technique. Gagne confiance.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Pouvoir Référent</div><div class="flashcard-content">Basé sur admiration et identification. Personne admirée et imitée. Fondation leadership transformationnel.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Leadership Transformationnel</div><div class="flashcard-content">Vision inspirante, motive dépassement soi. Long terme. Développement personnel. Change organismes. Charismatique.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Empathie</div><div class="flashcard-content">Reconnaissance et compréhension émotions des autres. Composante IE. Permet communication soutenante.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Accommodation</div><div class="flashcard-content">Perd/Gagne. Coopératif, non-assertif. Utilisé quand relation importante mais enjeu mineur.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Évitement Conflit</div><div class="flashcard-content">Perd/Perd. Ni assertif ni coopératif. Utilisé pour conflits mineurs ou manque information.</div></div></div>
+                </div>
+                <div id="quiz2" class="tab-content"><div class="quiz-container" id="quiz2-container"></div><button class="btn btn-primary" onclick="submitQuiz(2)" style="margin-top: 20px;">Soumettre</button></div>
+                <div id="exam2" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> 5 questions x 4pts basées sur case study. Dialogue entre deux managers en conflit. Durée: 2h</div><div id="exam2-container"></div><button class="btn btn-primary" onclick="submitExam(2)" style="margin-top: 20px;">Soumettre</button></div>
+            </div>
+
+            <!-- SUBJECT 4: MARKETING -->
+            <div id="subject3" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">4. Marketing Relationnel</div>
+                    <div class="section-subtitle">2h - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course3')">Cours</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard3')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz3')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam3')">Examen</button>
+                </div>
+                <div id="course3" class="tab-content active">
+                    <div class="card"><div class="card-title">Marketing Transactionnel vs Relationnel</div><div class="card-content"><strong>Transactionnel:</strong> Court terme, acquisition clients, vente unique, faible interaction<br><strong>Relationnel:</strong> Long terme, fidélisation clients, augmentation panier moyen, interactions multiples, personnalisation</div></div>
+                    <div class="card"><div class="card-title">Fidélité Client</div><div class="card-content"><strong>Avantages:</strong> Réduction coûts acquisition (client fidèle = moins de publicité), Bouche-à-oreille positif, Augmentation panier moyen, Rétention<br><strong>Fidélité Comportementale:</strong> Achat répété mesurable<br><strong>Fidélité Attitudinale:</strong> Engagement émotionnel, recommandation (plus précieuse)</div></div>
+                    <div class="card"><div class="card-title">CRM et Personnalisation</div><div class="card-content"><strong>CRM:</strong> Customer Relationship Management. Collecte data clients, historiques d'achat, préférences<br><strong>IA:</strong> Analyse comportement, recommandations personnalisées<br><strong>Avantages:</strong> Expérience personnalisée, conversion augmentée<br><strong>Risques:</strong> Vie privée, effet bulle (algorithme limite exposition nouvelle info), déshumanisation relation</div></div>
+                    <div class="card"><div class="card-title">Customer Lifetime Value (CLV)</div><div class="card-content"><strong>Formule:</strong> CLV = (Dépense moyenne × Fréquence × Durée) - Coûts - Coût acquisition<br><strong>Exemple:</strong> Client achète 5x/an, 100€/achat, fidélité 5 ans: CLV = (100 × 5 × 5) - 200 = 2300€<br><strong>Importance:</strong> Détermine budget marketing par client</div></div>
+                    <div class="card"><div class="card-title">Service Blueprint</div><div class="card-content"><strong>Points de contact:</strong> Tous les interactions client<br><strong>Ligne de visibilité:</strong> Actions visibles client vs backstage<br><strong>Frontstage:</strong> Ce que client voit (personnel, ambiance)<br><strong>Backstage:</strong> Processus interne (logistique, systèmes)</div></div>
+                    <div class="card"><div class="card-title">Parcours Client Omnicanal</div><div class="card-content"><strong>Omnicanal:</strong> Intégration tous canaux (boutique, web, mobile, réseaux sociaux)<br><strong>Irritants:</strong> Incohérence infos, processus fragmentés, manque continuité<br><strong>Opportunités:</strong> Cohérence message, flexibilité (début web → fin magasin), expérience fluide</div></div>
+                    <div class="card"><div class="card-title">Chatbot IA vs Programme Fidélité</div><div class="card-content"><strong>Chatbot IA:</strong> Disponibilité 24/7, réponses rapides, coûts réduits. Risque: impersonnel, erreurs, limitation complexité<br><strong>Programme Fidélité:</strong> Récompenses, incitations achat, données clients. Risque: coûts élevés, clientèle captive<br><strong>Combinaison:</strong> Chatbot pour service, programme pour rétention</div></div>
+                </div>
+                <div id="flashcard3" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">CLV</div><div class="flashcard-content">Customer Lifetime Value = (Dépense × Fréquence × Durée) - Coûts - Acquisition. Détermine budget marketing/client.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Fidélité Attitudinale</div><div class="flashcard-content">Engagement émotionnel client. Recommandation volontaire. Plus précieuse que comportementale (achat répété).</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">CRM</div><div class="flashcard-content">Customer Relationship Management. Collecte data clients, historiques, préférences. Base de la personnalisation.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Service Blueprint</div><div class="flashcard-content">Visualise tous points contact. Ligne visibilité: visible client vs backstage. Frontstage (client voit) vs Backstage (processus).</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Effet Bulle</div><div class="flashcard-content">Algorithme recommandation limite exposition à informations nouvelles/différentes. Risque: enfermement idées.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Omnicanal</div><div class="flashcard-content">Intégration tous canaux (magasin, web, mobile, réseaux). Expérience fluide, cohérence message, flexibilité client.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Marketing Relationnel</div><div class="flashcard-content">Long terme, fidélisation, interactions multiples, personnalisation. Vs Transactionnel: court terme, acquisition unique.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Bouche-à-Oreille</div><div class="flashcard-content">Recommandation clients satisfaits. Avantage clé fidélité. Gratuit et crédible. Résultat satisfaction élevée.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Chatbot Risques</div><div class="flashcard-content">Impersonnel, peut faire erreurs, limitation complexité questions, pas empathie. Mieux pour Questions simples/routines.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Programme Fidélité</div><div class="flashcard-content">Récompenses points/cadeaux, incitations achats répétés. Coûts élevés mais rétention clients importants.</div></div></div>
+                </div>
+                <div id="quiz3" class="tab-content"><div class="quiz-container" id="quiz3-container"></div><button class="btn btn-primary" onclick="submitQuiz(3)" style="margin-top: 20px;">Soumettre</button></div>
+                <div id="exam3" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> Questions cours (10pts) + Mini case study avec CLV (10pts). Durée: 2h</div><div id="exam3-container"></div><button class="btn btn-primary" onclick="submitExam(3)" style="margin-top: 20px;">Soumettre</button></div>
+            </div>
+
+            <!-- SUBJECT 5: GEOECONOMIE -->
+            <div id="subject4" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">5. Géoéconomie</div>
+                    <div class="section-subtitle">2h - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course4')">Cours</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard4')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz4')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam4')">Examen</button>
+                </div>
+                <div id="course4" class="tab-content active">
+                    <div class="card"><div class="card-title">Concepts Géoéconomiques</div><div class="card-content"><strong>Puissance économique comme arme stratégique:</strong> Utilisation ressources économiques (commerce, finance, énergie) pour atteindre objectifs politiques/stratégiques<br><strong>Soft Power vs Hard Power:</strong> Soft = influence sans contrainte (culture, diplomatie). Hard = coercition (militaire, sanctions)<br><strong>Géoéconomie combine les deux:</strong> Économie pour gains géopolitiques</div></div>
+                    <div class="card"><div class="card-title">Guerre Économique</div><div class="card-content"><strong>Sanctions:</strong> Restrictions commerciales ciblées (gel actifs, interdiction transactions)<br><strong>Embargos:</strong> Interdiction totale commerce (ex: Cuba, Iran)<br><strong>Protectionnisme:</strong> Tarifs douaniers, quotas, barrières non-tarifaires pour protéger industrie locale<br><strong>Néo-mercantilisme:</strong> État intervient pour surpluscommer (contrôle exportations, investissement stratégique)</div></div>
+                    <div class="card"><div class="card-title">Chaînes de Valeur Mondiales</div><div class="card-content"><strong>Dépendances:</strong> Pays dépend approvisionnement (semiconducteurs Taiwan, énergie Russie, terres rares Chine)<br><strong>Relocalisations:</strong> Rapatriement production pour réduire dépendance (stratégique/coûts)<br><strong>Nearshoring:</strong> Production pays proches (ex: Mexico pour USA vs Asie) pour sécurité + proximité</div></div>
+                    <div class="card"><div class="card-title">Transition Maritime et Énergétique</div><div class="card-content"><strong>Transition maritime:</strong> Contrôle routes maritimes (détroit Malacca, Suez) = contrôle commerce mondial. Importance ports stratégiques<br><strong>Transition énergétique:</strong> Passage énergies fossiles → renouvelables. Pays minéraux (lithium, cobalt) = nouveaux acteurs puissants. Géopolitique ressources change</div></div>
+                    <div class="card"><div class="card-title">Analyse Critique Notes Stratégiques</div><div class="card-content"><strong>Identifier forces:</strong> Données solides, logique cohérente, fondations théoriques<br><strong>Limites:</strong> Biais auteur, données incomplètes, hypothèses non-vérifiées<br><strong>Angles morts:</strong> Facteurs négligés (acteurs émergents, changements rapides, externalités non-considérées)</div></div>
+                </div>
+                <div id="flashcard4" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Soft Power</div><div class="flashcard-content">Influence sans contrainte. Culture, diplomatie, valeurs. Exemple: influence culturelle USA (films, musique).</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Sanctions Économiques</div><div class="flashcard-content">Restrictions commerciales ciblées. Gel actifs, interdiction transactions. Arme géopolitique moins extrême qu'embargo.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Néo-Mercantilisme</div><div class="flashcard-content">État intervient actif: contrôle exportations, investissements stratégiques, protectionnisme. Objectif: surplus commercial et indépendance.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Nearshoring</div><div class="flashcard-content">Production pays proches pour sécurité et proximité. Exemple: Mexico pour USA (vs Asie). Relocalisation partielle.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Routes Maritimes Stratégiques</div><div class="flashcard-content">Contrôle détroits (Malacca, Suez) = contrôle commerce mondial. Clés géopolitiques. Importance ports croît.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Terres Rares</div><div class="flashcard-content">Minéraux essentiels transition énergétique (lithium, cobalt, néodyme). Chine domine. Nouvelles dépendances géopolitiques.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Embargo</div><div class="flashcard-content">Interdiction totale commerce avec pays. Exemple: Cuba, Iran. Arme géopolitique majeure (coûteux).</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Relocalisation Production</div><div class="flashcard-content">Rapatriement fabrication pour réduire dépendances stratégiques ou coûts. Trend post-COVID par sécurité.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Géoéconomie</div><div class="flashcard-content">Utilisation puissance économique (commerce, finance) pour gains géopolitiques. Combine soft + hard power.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Analyse Critique Angles Morts</div><div class="flashcard-content">Facteurs négligés: acteurs émergents, changements rapides, externalités. Améliore pertinence note stratégique.</div></div></div>
+                </div>
+                <div id="quiz4" class="tab-content"><div class="quiz-container" id="quiz4-container"></div><button class="btn btn-primary" onclick="submitQuiz(4)" style="margin-top: 20px;">Soumettre</button></div>
+                <div id="exam4" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> Analyse critique note stratégique + contre-proposition. Open book, ChatGPT autorisé. Durée: 2h</div><div id="exam4-container"></div><button class="btn btn-primary" onclick="submitExam(4)" style="margin-top: 20px;">Soumettre</button></div>
+            </div>
+
+            <!-- SUBJECT 6: CHANGE MANAGEMENT (ENGLISH) -->
+            <div id="subject5" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">6. Change Management for Sustainability</div>
+                    <div class="section-subtitle">2h - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course5')">Course</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard5')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz5')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam5')">Exam</button>
+                </div>
+                <div id="course5" class="tab-content active">
+                    <div class="card"><div class="card-title">Kotter's 8-Step Model of Change</div><div class="card-content">1. <strong>Create Urgency:</strong> Establish compelling reason for change<br>2. <strong>Build Coalition:</strong> Gather key stakeholders and influencers<br>3. <strong>Form Vision:</strong> Clear picture of desired future state<br>4. <strong>Communicate:</strong> Repeatedly share vision and rationale<br>5. <strong>Empower Action:</strong> Remove barriers, delegate authority<br>6. <strong>Create Short-Term Wins:</strong> Quick successes build momentum<br>7. <strong>Build on Success:</strong> Consolidate gains, tackle remaining issues<br>8. <strong>Anchor in Culture:</strong> Make change permanent, embedded in values</div></div>
+                    <div class="card"><div class="card-title">Lewin's 3-Stage Model</div><div class="card-content"><strong>Unfreeze:</strong> Create awareness of need to change. Break old patterns. Discomfort with status quo.<br><strong>Change:</strong> Implement new behaviors/processes. Training, support, experimentation. Trial and error.<br><strong>Refreeze:</strong> Stabilize changes. Reinforce new behaviors. Become new normal. Prevent reversion to old ways.</div></div>
+                    <div class="card"><div class="card-title">The Natural Step Framework</div><div class="card-content"><strong>Sustainability Focus:</strong> Systematic approach to sustainable business<br><strong>4 System Conditions for Sustainability:</strong> Nature not depleted, Persistent substances not accumulate, Biodiversity preserved, Human needs met efficiently<br><strong>Backcasting:</strong> Start from sustainable vision, work backwards to identify actions</div></div>
+                    <div class="card"><div class="card-title">Organizational Identity & Values-Driven Strategy</div><div class="card-content"><strong>Organizational Identity:</strong> WHO WE ARE. Core values, mission, culture<br><strong>Values-Driven Strategy:</strong> Business strategy aligned with core values. Authenticity > profit only. Build stakeholder trust.<br><strong>Multiplier Firms:</strong> Companies creating systemic change (not just own impact) while maintaining values. Example: Patagonia (activism)</div></div>
+                    <div class="card"><div class="card-title">Resistance to Change: Sources</div><div class="card-content"><strong>Cognitive Rigidity:</strong> Difficulty thinking differently. Comfort in familiar patterns.<br><strong>Resource Scarcity:</strong> Change requires investment (time, money). Fear of insufficient resources.<br><strong>Institutional Pressure:</strong> Organizational structures, processes resist change. Inertia. Status quo benefits some groups.<br><strong>Mitigation:</strong> Clear vision, stakeholder involvement, resourcement, pilot projects, celebrate early wins</div></div>
+                    <div class="card"><div class="card-title">Measuring Sustainability Impact</div><div class="card-content"><strong>Credibility vs Greenwashing:</strong> Real metrics (carbon reduction, waste elimination) vs. superficial claims (green marketing without substance)<br><strong>Key Metrics:</strong> Carbon footprint, waste reduction, water usage, renewable energy %, social impact<br><strong>Certification:</strong> Third-party verification (B Corp, ISO 14001) increases credibility</div></div>
+                    <div class="card"><div class="card-title">Stakeholder Theory & Legitimacy</div><div class="card-content"><strong>Stakeholder Theory:</strong> Firm has obligations to all stakeholders (employees, customers, suppliers, communities, environment)<br><strong>Legitimacy:</strong> Organization perceived as appropriate/acceptable by society. Sustainability = legitimacy</div></div>
+                    <div class="card"><div class="card-title">Phoenix Organic Case Study</div><div class="card-content"><strong>Company:</strong> Auckland, NZ. Organic beverages. NZ$6.5M revenue. Café distribution. Sustainability advocate<br><strong>Challenge:</strong> Growth vs. Values. Scaling production (economies of scale) vs. maintaining organic/sustainability standards<br><strong>Key Issue:</strong> How to grow profitably while staying true to sustainability mission? Tension between commercial success and environmental principles</div></div>
+                </div>
+                <div id="flashcard5" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Kotter Step 1-3</div><div class="flashcard-content">Create Urgency: reason for change. Build Coalition: stakeholders. Form Vision: desired future.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Unfreeze-Change-Refreeze</div><div class="flashcard-content">Lewin's model. Unfreeze: break patterns. Change: implement new ways. Refreeze: stabilize changes, make new normal.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Natural Step Framework</div><div class="flashcard-content">4 System Conditions: Nature not depleted, Substances don't accumulate, Biodiversity preserved, Human needs met. Backcasting approach.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Values-Driven Strategy</div><div class="flashcard-content">Business aligned with core values. Authenticity > profit. Builds stakeholder trust. Creates legitimacy in society.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Multiplier Firms</div><div class="flashcard-content">Create systemic change beyond own impact. Example: Patagonia. Activism. Sustainable values core to business identity.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Cognitive Rigidity</div><div class="flashcard-content">Difficulty thinking differently. Comfort in familiar. Source of resistance to change. Overcome with clear vision.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Greenwashing</div><div class="flashcard-content">Superficial green claims without substance. Loss credibility. Third-party certification (B Corp) proves real impact.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Stakeholder Theory</div><div class="flashcard-content">Firm has obligations all stakeholders: employees, customers, suppliers, communities, environment. Not just shareholders.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Legitimacy</div><div class="flashcard-content">Organization perceived acceptable by society. Sustainability practices build legitimacy. Stakeholder acceptance.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Phoenix Organic Challenge</div><div class="flashcard-content">Growth vs. Values. Scale production for profit vs. maintain organic/sustainability standards. Tension commercial success/environment.</div></div></div>
+                </div>
+                <div id="quiz5" class="tab-content"><div class="quiz-container" id="quiz5-container"></div><button class="btn btn-primary" onclick="submitQuiz(5)" style="margin-top: 20px;">Submit</button></div>
+                <div id="exam5" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> 2 out of 4 essay questions, 10pts each, 10-12 lines max per answer. 2h exam</div><div id="exam5-container"></div><button class="btn btn-primary" onclick="submitExam(5)" style="margin-top: 20px;">Submit</button></div>
+            </div>
+
+            <!-- SUBJECT 7: PERFORMANCE MANAGEMENT (ENGLISH) -->
+            <div id="subject6" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">7. Performance Management (Pilotage)</div>
+                    <div class="section-subtitle">2h - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course6')">Course</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard6')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz6')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam6')">Exam</button>
+                </div>
+                <div id="course6" class="tab-content active">
+                    <div class="card"><div class="card-title">Financial Objectives & Management Accounting</div><div class="card-content"><strong>Financial Objective:</strong> Increase owners' wealth/shareholder value<br><strong>Financial Management:</strong> Ensure funds available for operations<br><strong>Management Accounting vs Financial:</strong> Management = internal, future-focused, support decision-making. Financial = external, historical, compliance/reporting</div></div>
+                    <div class="card"><div class="card-title">Relevant Costs & Opportunity Cost</div><div class="card-content"><strong>Relevant Costs:</strong> Future costs that differ between alternatives. Ignore sunk costs (already spent)<br><strong>Opportunity Cost:</strong> Benefit forgone by choosing one option over another. Ex: Use equipment for Product A = miss revenue from Product B</div></div>
+                    <div class="card"><div class="card-title">Cost Behavior</div><div class="card-content"><strong>Fixed Costs:</strong> Constant regardless of volume. (Rent, salaries, depreciation)<br><strong>Variable Costs:</strong> Proportional to volume. (Raw materials, commissions)<br><strong>Semi-Variable:</strong> Mix of fixed + variable. (Utilities)<br><strong>Stepped Costs:</strong> Constant within range, jump at threshold. (Additional supervisor when reach 50 staff)</div></div>
+                    <div class="card"><div class="card-title">Full Cost / Absorption Costing</div><div class="card-content"><strong>Full Cost:</strong> All costs including overheads allocated to products/services. Cost per unit = (Fixed + Variable) / Units<br><strong>Use:</strong> Pricing decisions, profitability analysis, inventory valuation<br><strong>Advantage:</strong> Complete picture. <strong>Disadvantage:</strong> Overhead allocation arbitrary</div></div>
+                    <div class="card"><div class="card-title">Process Costing & ABC</div><div class="card-content"><strong>Process Costing:</strong> Total cost / Total units produced. Use when many identical items. (Manufacturing)<br><strong>ABC (Activity-Based):</strong> Allocate overhead by activities/cost drivers. More accurate than traditional. Cost pools → drivers → units</div></div>
+                    <div class="card"><div class="card-title">CVP Analysis (Cost-Volume-Profit)</div><div class="card-content"><strong>Contribution Margin:</strong> CM = Selling Price - Variable Cost per unit<br><strong>BEP Units:</strong> FC / CM per unit = Number units to break even<br><strong>BEP Revenue:</strong> BEP units × SP<br><strong>Margin of Safety:</strong> Actual sales - BEP sales. Buffer before loss<br><strong>Target Profit:</strong> (FC + Target Profit) / CM = Units needed</div></div>
+                    <div class="card"><div class="card-title">Budgeting & Flexible Budgets</div><div class="card-content"><strong>Budgeting:</strong> Strategic planning process. Allocate resources, set targets, control spending<br><strong>Flexible Budget:</strong> Adjusted for actual activity levels. Shows what costs SHOULD be at actual volume. Better variance analysis</div></div>
+                    <div class="card"><div class="card-title">Variances: Sales & Cost</div><div class="card-content"><strong>Sales Volume Variance:</strong> (Actual units - Budgeted units) × Budgeted CM<br><strong>Sales Price Variance:</strong> (Actual price - Budgeted price) × Actual units<br><strong>Variable Cost Spending:</strong> (Actual cost - Standard cost) × Actual units<br><strong>Fixed Cost Spending:</strong> Actual fixed cost - Budgeted fixed cost<br><strong>F = Favorable</strong> (increases profit), <strong>A = Adverse</strong> (decreases profit)</div></div>
+                    <div class="card"><div class="card-title">Balanced Scorecard</div><div class="card-content"><strong>4 Perspectives:</strong><br>1. <strong>Financial:</strong> Profitability, cash flow, revenue growth<br>2. <strong>Customer:</strong> Satisfaction, retention, market share<br>3. <strong>Internal Process:</strong> Quality, efficiency, innovation<br>4. <strong>Learning & Growth:</strong> Employee development, training, culture<br>Integrates strategy across organization</div></div>
+                    <div class="card"><div class="card-title">Feedback vs Feedforward Control</div><div class="card-content"><strong>Feedback:</strong> Compare actual to budget AFTER event. Corrective action too late. (Monthly reports)<br><strong>Feedforward:</strong> Predict problems BEFORE they occur. Proactive adjustment. (Forecasts, early warning systems)<br><strong>Feedforward > Feedback</strong> for effectiveness</div></div>
+                    <div class="card"><div class="card-title">Management by Exception</div><div class="card-content"><strong>Focus on:</strong> Only significant variances (e.g., >10% deviation)<br><strong>Benefit:</strong> Saves management time, concentrates effort where needed<br><strong>Use:</strong> Monitor key metrics, alert when thresholds breached</div></div>
+                </div>
+                <div id="flashcard6" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Contribution Margin</div><div class="flashcard-content">CM = Selling Price - Variable Cost per unit. Used in CVP analysis, target profit calculations, product mix decisions.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Break-Even Point</div><div class="flashcard-content">BEP Units = FC / CM per unit. Revenue = BEP units × SP. Point where profit = 0. Below = loss, above = profit.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Margin of Safety</div><div class="flashcard-content">Actual sales - BEP sales. Buffer before losses. Percentage = (Actual - BEP) / Actual. Higher = safer.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Fixed vs Variable Costs</div><div class="flashcard-content">Fixed: Rent, salaries, constant. Variable: Materials, commissions, proportional to volume. Semi-variable: Mix. Stepped: Jump at threshold.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">ABC Costing</div><div class="flashcard-content">Activity-Based Costing. Allocate overhead by activities/cost drivers. More accurate than traditional absorption costing. Cost pools.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Sales Volume Variance</div><div class="flashcard-content">(Actual units - Budgeted) × Budgeted CM. Measures impact volume change on profit. F if actual > budgeted.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Balanced Scorecard</div><div class="flashcard-content">4 perspectives: Financial (profit), Customer (satisfaction), Internal (efficiency), Learning (development). Integrates strategy organization-wide.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Flexible Budget</div><div class="flashcard-content">Adjusted for actual activity. Shows what costs SHOULD be at actual volume. Better variance analysis than static budget.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Feedforward Control</div><div class="flashcard-content">Predict problems BEFORE occurring. Proactive adjustment. (Forecasts, early warnings). More effective than feedback control.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Management by Exception</div><div class="flashcard-content">Focus only significant variances (e.g., >10%). Saves time, concentrates effort. Alert when thresholds breached.</div></div></div>
+                </div>
+                <div id="quiz6" class="tab-content"><div class="quiz-container" id="quiz6-container"></div><button class="btn btn-primary" onclick="submitQuiz(6)" style="margin-top: 20px;">Submit</button></div>
+                <div id="exam6" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> 30 MCQ (30pts) + CVP Exercise (20pts) + ABC+Budgets+Variances (30pts). Total 80pts (scaled /20). 2h exam</div><div id="exam6-container"></div><button class="btn btn-primary" onclick="submitExam(6)" style="margin-top: 20px;">Submit</button></div>
+            </div>
+
+            <!-- SUBJECT 8: ANALYSE QUALITATIVE -->
+            <div id="subject7" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">8. Analyse de Données Qualitatives</div>
+                    <div class="section-subtitle">1h30 - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course7')">Cours</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard7')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz7')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam7')">Examen</button>
+                </div>
+                <div id="course7" class="tab-content active">
+                    <div class="card"><div class="card-title">Designs Qualitatifs</div><div class="card-content"><strong>Étude de Cas:</strong> Exploration profonde un phénomène/organisation. Riche contexte. Non généralisable<br><strong>Phénoménologie:</strong> Compréhension expériences vécues individuals. Significations subjectifs<br><strong>Ethnographie:</strong> Immersion dans culture/communauté. Observation participante. Comprendre normes/valeurs<br><strong>Théorie Enracinée (Grounded Theory):</strong> Développer théorie à partir données. Processus itératif: données → codage → théorie<br><strong>Recherche-Action:</strong> Participant et chercheur collaborent. Changement et apprentissage simultanés</div></div>
+                    <div class="card"><div class="card-title">Échantillonnage Qualitatif</div><div class="card-content"><strong>Purposif:</strong> Sélectionner participants selon critères spécifiques (représentatifs phénomène)<br><strong>Boule de Neige:</strong> Participant référe autres participants. Particul quand population cachée<br><strong>Théorique:</strong> Continue jusqu'à saturation (plus nouvelles infos)<br><strong>Critères inclusion/exclusion:</strong> Définir qui peut/ne peut pas participer<br><strong>Risques:</strong> Biais sélection, effet gardien/gatekeeper (gère accès participants)</div></div>
+                    <div class="card"><div class="card-title">Collecte de Données</div><div class="card-content"><strong>Entretiens Semi-directifs:</strong> Questions ouvertes, flexible, approfondissement. Profondeur VS Réflexivité<br><strong>Focus Groups:</strong> Groupe discussion facilitée. Dynamique groupe, idées croisées<br><strong>Observation:</strong> Directe ou participante. Comportements naturels, contexte<br><strong>Documents:</strong> Archives, rapports, correspondances. Traçabilité, contexte historique</div></div>
+                    <div class="card"><div class="card-title">Focus Group vs Entretiens</div><div class="card-content"><strong>Focus Group:</strong> Quand: dynamique groupe importante, brainstorm idées collectives. Rapidité générer données. Coût réduit<br><strong>Entretiens:</strong> Quand: profondeur individuelle, sujets sensibles, perspectives nuancées<br><strong>Combinaison:</strong> Optimal: focus group + entretiens individuels</div></div>
+                    <div class="card"><div class="card-title">Éthique Recherche Qualitative</div><div class="card-content"><strong>Consentement Éclairé:</strong> Participant comprend nature étude, risques, droit se retirer<br><strong>Anonymat:</strong> Identité protégée dans rapports<br><strong>Confidentialité:</strong> Données sécurisées, accès restreint<br><strong>Réflexivité:</strong> Chercheur conscient propre biais, valeurs, influence sur recherche</div></div>
+                    <div class="card"><div class="card-title">Critères Rigueur (Lincoln & Guba)</div><div class="card-content"><strong>Crédibilité:</strong> Résultats crédibles, reflètent expérience participant (prolonged engagement, triangulation)<br><strong>Transférabilité:</strong> Résultats applicables autre contexte (description riche contexte)<br><strong>Fiabilité:</strong> Processus cohérent et documenté. Audit trail<br><strong>Confirmabilité:</strong> Résultats basés données, pas biais chercheur</div></div>
+                    <div class="card"><div class="card-title">Pipeline Analyse: Codage</div><div class="card-content"><strong>Codage Ouvert:</strong> Identifier concepts, labels émergents. Mot-à-mot données<br><strong>Codage Axial:</strong> Relier codes, chercher patterns, catégories. Relate codes<br><strong>Codage Sélectif:</strong> Intégrer catégories autour théorie core. Synthèse<br><strong>Thèmes:</strong> Patterns significatifs travers données. Niveau abstraction supérieur</div></div>
+                </div>
+                <div id="flashcard7" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Étude de Cas</div><div class="flashcard-content">Exploration profonde un phénomène/organisation. Contexte riche. Non généralisable mais détaillé.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Grounded Theory</div><div class="flashcard-content">Développer théorie à partir données. Processus itératif: données → codage → théorie émergente.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Échantillonnage Boule de Neige</div><div class="flashcard-content">Participant référe autres participants. Idéal populations cachées/difficiles accès. Crée chaîne effet.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Entretien Semi-Directif</div><div class="flashcard-content">Questions ouvertes, flexible, approfondissement possible. Chercheur peut explorer réponses.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Focus Group Avantage</div><div class="flashcard-content">Dynamique groupe, génère idées croisées rapidement, coût réduit. Quand interaction groupe est important.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Réflexivité</div><div class="flashcard-content">Chercheur conscient propre biais, valeurs, influence sur recherche. Élement éthique fondamental.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Crédibilité Recherche (Lincoln & Guba)</div><div class="flashcard-content">Résultats reflètent expérience participant. Prolonged engagement, triangulation sources.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Codage Ouvert</div><div class="flashcard-content">Identifier concepts et labels émergents à partir données. Mot-à-mot. Première étape analyse.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Codage Axial</div><div class="flashcard-content">Relier codes, chercher patterns, catégories. Relate codes ensemble. Deuxième étape.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Transférabilité</div><div class="flashcard-content">Résultats applicables autre contexte. Dépend description riche contexte original.</div></div></div>
+                </div>
+                <div id="quiz7" class="tab-content"><div class="quiz-container" id="quiz7-container"></div><button class="btn btn-primary" onclick="submitQuiz(7)" style="margin-top: 20px;">Soumettre</button></div>
+                <div id="exam7" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> 3 questions ouvertes (9pts) + 2 case studies (11pts). Durée: 1h30</div><div id="exam7-container"></div><button class="btn btn-primary" onclick="submitExam(7)" style="margin-top: 20px;">Soumettre</button></div>
+            </div>
+
+            <!-- SUBJECT 9: ANALYSE QUANTITATIVE -->
+            <div id="subject8" class="content-section">
+                <div class="section-header">
+                    <div class="section-title">9. Analyse de Données Quantitatives</div>
+                    <div class="section-subtitle">2h - /20</div>
+                </div>
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'course8')">Cours</button>
+                    <button class="tab-button" onclick="switchTab(event, 'flashcard8')">Flashcards</button>
+                    <button class="tab-button" onclick="switchTab(event, 'quiz8')">Quiz</button>
+                    <button class="tab-button" onclick="switchTab(event, 'exam8')">Examen</button>
+                </div>
+                <div id="course8" class="tab-content active">
+                    <div class="card"><div class="card-title">Statistiques Descriptives</div><div class="card-content"><strong>Moyenne:</strong> Somme / n. Sensible aux extrêmes<br><strong>Médiane:</strong> Valeur milieu. Moins sensible extrêmes<br><strong>Mode:</strong> Valeur plus fréquente<br><strong>Écart-type:</strong> Mesure dispersion autour moyenne. Écart-type élevé = données dispersées<br><strong>Distribution:</strong> Symétrique (courbe normal), Asymétrique (skewed) gauche/droite</div></div>
+                    <div class="card"><div class="card-title">Histogramme: Description</div><div class="card-content"><strong>Forme:</strong> Normale (cloche), bimodale (deux pics), uniforme, asymétrique<br><strong>Symétrie:</strong> Symétrique VS Asymétrique<br><strong>Concentration:</strong> Valeurs groupées (étroit) VS dispersées (large)<br><strong>Dispersion:</strong> Plage valeurs, écart-type<br><strong>Lecture:</strong> Axe Y = fréquence, Axe X = variable</div></div>
+                    <div class="card"><div class="card-title">Distribution Symétrique</div><div class="card-content"><strong>Caractéristique:</strong> Moyenne = Médiane = Mode<br><strong>Forme:</strong> Courbe normale (Gauss)<br><strong>Implication:</strong> Distribution parfaitement équilibrée. Données symétriques autour moyenne</div></div>
+                    <div class="card"><div class="card-title">Corrélation de Pearson</div><div class="card-content"><strong>Valeur:</strong> r entre -1 et +1<br><strong>Interprétation Force:</strong> |r| = 1 (parfait), 0.7-0.9 (fort), 0.4-0.6 (modéré), 0.1-0.3 (faible), 0 (aucun)<br><strong>Direction:</strong> r > 0 (positif: augmente ensemble), r < 0 (négatif: inverse)<br><strong>Significativité:</strong> p < 0.05 = statistiquement significatif<br><strong>Limitation:</strong> Corrélation ≠ Causalité!</div></div>
+                    <div class="card"><div class="card-title">Corrélation Trompeuse (Spurious)</div><div class="card-content"><strong>Définition:</strong> Deux variables corrélées mais pas lien causal<br><strong>Exemple:</strong> Ventes glaces corrèlent avec noyades (variable confondante = température)<br><strong>Risque:</strong> Conclusions fausses si pas identifier variable confondante<br><strong>Contrôle:</strong> Régression multiple, expérience contrôlée, connaissance domaine</div></div>
+                    <div class="card"><div class="card-title">Régression Linéaire Multiple</div><div class="card-content"><strong>Modèle:</strong> Y = β0 + β1X1 + β2X2 + ... + e<br><strong>Coefficients (β):</strong> Changement Y pour chaque unité Xi<br><strong>Significativité:</strong> p < 0.05 = coefficient significatif<br><strong>R²:</strong> % variance Y expliquée par variables (0-1). R² ajusté = corrige nombre variables<br><strong>Estimation Standardisée:</strong> Compare force relative variables (même unités)</div></div>
+                    <div class="card"><div class="card-title">Interprétation Coefficients Régression</div><div class="card-content"><strong>Exemple:</strong> β1 = 2.5 pour variable X1<br><strong>Signifie:</strong> Pour chaque unité augmentation X1, Y augmente 2.5 unités (contrôlant autres variables)<br><strong>Variable Influente:</strong> Estimation standardisée plus élevée = plus d'impact sur Y<br><strong>Unité:</strong> Coefficient dépend unités variables (kg VS tonnes)</div></div>
+                    <div class="card"><div class="card-title">Recommandations Managériales</div><div class="card-content"><strong>Basées Résultats:</strong> Identifier variables significatives (p < 0.05)<br><strong>Prioriser:</strong> Variables avec estimation standardisée élevée<br><strong>R²:</strong> Évaluer si modèle explique variation (R² > 0.5 généralement bon)<br><strong>Implications:</strong> Traduire résultats statistiques en actions management<br><strong>Causalité:</strong> Prudence: corrélation ≠ Causalité. Causation doit être justifiée théorie/expérience</div></div>
+                </div>
+                <div id="flashcard8" class="tab-content">
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Moyenne vs Médiane</div><div class="flashcard-content">Moyenne: somme/n, sensible extrêmes. Médiane: valeur milieu, robuste. Utiliser médiane si distribution asymétrique.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Écart-type</div><div class="flashcard-content">Mesure dispersion autour moyenne. Écart-type élevé = données dispersées. Unité: même que variable.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Pearson r</div><div class="flashcard-content">Entre -1 et +1. |r| = 1 (parfait), 0.7-0.9 (fort), 0.4-0.6 (modéré). p < 0.05 (significatif). r > 0 (positif), r < 0 (négatif).</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Corrélation ≠ Causalité</div><div class="flashcard-content">Deux variables corrélées n'impliquent pas lien causal. Peut y avoir variable confondante. Confirmation théorie/expérience.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Corrélation Spurious</div><div class="flashcard-content">Deux variables corrélées sans lien causal. Variable confondante responsable. Ex: Glaces et noyades (température).</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">R² Régression</div><div class="flashcard-content">% variance Y expliquée variables (0-1). R² > 0.5 généralement bon. R² ajusté corrige nombre variables.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Coefficient Régression</div><div class="flashcard-content">β = changement Y par unité Xi. Significativité: p < 0.05. Estimation standardisée: compare force relative.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Distribution Symétrique</div><div class="flashcard-content">Moyenne = Médiane = Mode. Courbe normale (Gauss). Données équilibrées autour moyenne.</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Histogramme Analyse</div><div class="flashcard-content">Forme (normal/bimodal), Symétrie, Concentration (étroit/large), Dispersion (plage, écart-type).</div></div></div>
+                    <div class="flashcard" onclick="flipCard(this)"><div><div class="flashcard-label">Recommandations Quantitatives</div><div class="flashcard-content">Identifier variables significatives (p < 0.05). Prioriser estimation standardisée élevée. Vérifier R². Traduire en actions management.</div></div></div>
+                </div>
+                <div id="quiz8" class="tab-content"><div class="quiz-container" id="quiz8-container"></div><button class="btn btn-primary" onclick="submitQuiz(8)" style="margin-top: 20px;">Soumettre</button></div>
+                <div id="exam8" class="tab-content"><div class="exam-instructions"><strong>Format:</strong> Ex1 Descriptives (3pts) + Ex2 Corrélations (8pts) + Ex3 Régression (9pts). Durée: 2h</div><div id="exam8-container"></div><button class="btn btn-primary" onclick="submitExam(8)" style="margin-top: 20px;">Soumettre</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === 'due3') {
+                document.getElementById('lockScreen').classList.add('hidden');
+            } else {
+                alert('Mot de passe incorrect');
+            }
+        }
+
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        function showHome() {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('homeSection').classList.add('active');
+        }
+
+        function showSubject(index) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('subject' + index).classList.add('active');
+        }
+
+        function switchTab(event, tabName) {
+            event.target.parentElement.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            event.target.parentElement.parentElement.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            initializeQuiz(tabName);
+        }
+
+        function flipCard(card) {
+            card.style.transform = card.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
+        }
+
+        const quizData = [
+            { questions: [
+                { q: "Quel est le principal risque de l'effet de halo?", a: ["Augmente diversité", "Une caractéristique positive influence perception globale", "Réduit coût", "Améliore prédictivité"], c: 1 },
+                { q: "GPEC signifie:", a: ["Gestion Plaintes", "Gestion Prévisionnelle Emplois Compétences", "Gestion Primes", "Gestion Groupes"], c: 1 },
+                { q: "Théorie d'équité Adams: inéquité → ?", a: ["Motivation ↑", "Insatisfaction, démotivation, départ", "Performance ↑", "Équité externe ↑"], c: 1 },
+                { q: "Plafond de verre est:", a: ["Limite salaires femmes", "Barrière empêchant femmes direction", "Politique télétravail", "Type contrat"], c: 1 },
+                { q: "Différence équité interne vs externe?", a: ["Fixe VS variable", "Cohérence entre employés VS compétitivité marché", "Salaires VS avantages", "Aucune"], c: 1 },
+                { q: "Discrimination directe VS indirecte:", a: ["Même chose", "Directe: traitement différent basé caractéristique protégée. Indirecte: règle neutre mais désavantageuse", "Inverse", "Directe = pas légale"], c: 1 },
+                { q: "Mobilité interne avantage:", a: ["Plus recrutement", "Rétient talents, réduit coûts recrutement", "Réduit salaires", "Élimine formation"], c: 1 },
+                { q: "Entretien structuré VS non-structuré:", a: ["Lieu", "Questions identiques VS adaptées, objectif VS subjectif", "Durée", "Nombre candidats"], c: 1 }
+            ]},
+            { questions: [
+                { q: "CVIM c'est:", a: ["Convention Vente", "Convention Vienne Ventes Intl Marchandises", "Code Vente", "Contrat"], c: 1 },
+                { q: "FOB signifie:", a: ["Front of Boat", "Franco à Bord - vendeur paie jusquà embarquement", "Free of Burden", "For Buyer"], c: 1 },
+                { q: "DDP maximum responsabilité:", a: ["Acheteur", "Vendeur", "Aucun", "Partagée"], c: 1 },
+                { q: "Article 79 CVIM:", a: ["Paiement", "Force majeure exonère responsabilité", "Délai livraison", "Garantie"], c: 1 },
+                { q: "Convention NY 1958:", a: ["Commerce", "Reconnaît sentences arbitrales", "Transport", "Douane"], c: 1 },
+                { q: "Rome I c'est:", a: ["Loi italienne", "Détermine loi applicable contrats", "Arbitrage", "Juridiction"], c: 1 },
+                { q: "Transfert propriété:", a: ["Réglé CVIM", "Non réglé CVIM, droit national", "Automatique livraison", "Vendeur toujours"], c: 1 },
+                { q: "Limitation transporteur maritime:", a: ["Illimitée", "Par colis OU kg (Convention Hambourg)", "Responsabilité totale", "Pas de limite"], c: 1 }
+            ]},
+            { questions: [
+                { q: "Style collaboration c'est:", a: ["Gagne/Perd", "Gagne/Gagne, assertif coopératif", "Perd/Perd", "Perd/Gagne"], c: 1 },
+                { q: "Communication soutenante:", a: ["Critique personnelle", "Orientée problème, descriptive, congruente, validante, spécifique", "Évaluative", "Générale"], c: 1 },
+                { q: "Intelligence Émotionnelle (Goleman):", a: ["Juste IQ", "Conscience soi, maîtrise soi, motivation, empathie, compétences sociales", "Personnalité", "Quotient réussite"], c: 1 },
+                { q: "Pouvoir Expert basé sur:", a: ["Position", "Compétences/connaissance reconnue", "Récompenses", "Coercion"], c: 1 },
+                { q: "Pouvoir Référent c'est:", a: ["Information", "Admiration et identification", "Légal", "Récompense"], c: 1 },
+                { q: "Leadership Transformationnel:", a: ["Échange récompense/punition", "Vision inspirante, motive dépassement, long terme", "Contrôle tâches", "Stabilité"], c: 1 },
+                { q: "Accommodation VS Collaboration:", a: ["Même", "Accommodation: Perd/Gagne. Collaboration: Gagne/Gagne", "Invers", "Pas différence"], c: 1 },
+                { q: "Empathie c'est:", a: ["Accord", "Reconnaissance émotions autres", "Similarité", "Jugement"], c: 1 }
+            ]},
+            { questions: [
+                { q: "CLV formule:", a: ["Salaire × Ans", "(Dépense × Fréquence × Durée) - Coûts - Acquisition", "Revenue × Profit", "Coûts / Revenue"], c: 1 },
+                { q: "Fidélité attitudinale:", a: ["Juste achats", "Engagement émotionnel, recommandation", "Contrat", "Obligation"], c: 1 },
+                { q: "Marketing Relationnel VS Transactionnel:", a: ["Pas différence", "Relationnel: long terme, fidélisation. Transactionnel: court terme, acquisition", "Même", "Relationnel: publicité"], c: 1 },
+                { q: "CRM c'est:", a: ["Client Relation Marketing", "Customer Relationship Management - collecte data, historiques", "Customer Resource", "Client Revenue"], c: 1 },
+                { q: "Effet Bulle IA:", a: ["Améliore exposition", "Limite exposition info nouvelles/différentes", "Augmente choix", "Réduit prix"], c: 1 },
+                { q: "Service Blueprint:", a: ["Budget", "Points contact, ligne visibilité, frontstage VS backstage", "Service Premium", "Client Seg"], c: 1 },
+                { q: "Omnicanal avantage:", a: ["Un canal", "Intégration tous canaux, cohérence, flexibilité", "Coûts ↑", "Moins touchpoints"], c: 1 },
+                { q: "Chatbot risque:", a: ["Efficace 100%", "Impersonnel, peut erreurs, limitation complexité", "Toujours bon", "Remplace agents"], c: 1 }
+            ]},
+            { questions: [
+                { q: "Soft Power:", a: ["Militaire", "Influence sans contrainte (culture, diplomatie)", "Économique coercitif", "Sanctions"], c: 1 },
+                { q: "Sanctions économiques:", a: ["Embargo total", "Restrictions commerciales ciblées", "Pas grave", "Toujours efficace"], c: 1 },
+                { q: "Néo-mercantilisme:", a: ["Libre échange", "État intervient: contrôle exports, investissements stratégiques", "Ancien système", "Pas intervention"], c: 1 },
+                { q: "Nearshoring:", a: ["Très loin", "Production pays proches pour sécurité proximité", "Offshoring", "même pays"], c: 1 },
+                { q: "Routes maritimes importance:", a: ["Aucune", "Contrôle détroits (Malacca, Suez) = contrôle commerce global", "Locale", "Historique"], c: 1 },
+                { q: "Terres rares en transition:", a: ["Pas importants", "Essentiels énergies renouvelables (lithium, cobalt)", "Obsolètes", "Remplacés"], c: 1 },
+                { q: "Chaînes valeur mondia dépendance:", a: ["Pas riséqjue", "Pays dépend approvisionnement clé (chips Taiwan, énergie)", "Avantage", "Aucun risque"], c: 1 },
+                { q: "Analyse critique angles morts:", a: ["Ignorer", "Facteurs négligés: acteurs émergents, changements rapides", "Pas nécessaire", "Toujours connus"], c: 1 }
+            ]},
+            { questions: [
+                { q: "Kotter Step 1: ", a: ["Intégrer changement", "Create Urgency - reason for change", "Célébrer wins", "Anchor culture"], c: 1 },
+                { q: "Lewin Unfreeze:", a: ["Implémenter", "Break old patterns, discomfort status quo", "Stabiliser", "Ignorer"], c: 1 },
+                { q: "Natural Step Framework:", a: ["4 steps business", "4 System Conditions: Nature not depleted, Substances don't accumulate, Biodiversity, Needs met", "8 steps", "3 phases"], c: 1 },
+                { q: "Values-Driven Strategy:", a: ["Profit only", "Business aligned core values, authenticity, stakeholder trust", "Pas relation", "Cost cutting"], c: 1 },
+                { q: "Multiplier Firms:", a: ["Moins impact", "Create systemic change while maintaining values (ex: Patagonia)", "Aucun impact", "Greenwashing"], c: 1 },
+                { q: "Resistance to Change source:", a: ["Acceptation totale", "Cognitive rigidity, resource scarcity, institutional pressure", "Enthousiasme", "Rapide adoption"], c: 1 },
+                { q: "Greenwashing risk:", a: ["Good marketing", "Superficial claims without substance, lose credibility", "Sustainability", "Real impact"], c: 1 },
+                { q: "Phoenix Organic issue:", a: ["Pas problème", "Growth VS Values tension: scale production VS maintain organic standards", "Facile", "Pas tension"], c: 1 }
+            ]},
+            { questions: [
+                { q: "Contribution Margin = ", a: ["Fixed costs", "SP - Variable Cost per unit", "Revenue - Gross", "Fixed / Variable"], c: 1 },
+                { q: "BEP Units = ", a: ["Revenue / MC", "FC / CM per unit", "Profit / Price", "Quantity × Price"], c: 1 },
+                { q: "Fixed Costs exemple:", a: ["Materials", "Rent, salaries, depreciation", "Commission", "Variable"], c: 1 },
+                { q: "ABC Costing:", a: ["Traditional", "Activity-Based - allocate overhead by activities/cost drivers", "Simple", "Not accurate"], c: 1 },
+                { q: "Flexible Budget:", a: ["Static", "Adjusted for actual activity levels", "Never change", "Not useful"], c: 1 },
+                { q: "Balanced Scorecard 4 perspectives:", a: ["Juste financial", "Financial, Customer, Internal Process, Learning & Growth", "External only", "Strategic vision"], c: 1 },
+                { q: "Feedforward Control:", a: ["After event", "Predict problems BEFORE, proactive adjustment", "Reactive", "Too late"], c: 1 },
+                { q: "Sales Volume Variance:", a: ["Price change", "(Actual - Budget units) × MC measures volume impact profit", "Cost change", "Revenue only"], c: 1 }
+            ]},
+            { questions: [
+                { q: "Étude de Cas définition:", a: ["Quantitative", "Exploration profonde un phénomène, contexte riche", "Générale population", "Statistiques"], c: 1 },
+                { q: "Grounded Theory:", a: ["Théorie première", "Développer théorie à partir données, itératif", "Déductif", "Pas théorique"], c: 1 },
+                { q: "Échantillonnage Purposif:", a: ["Aléatoire", "Sélectionner selon critères spécifiques", "Représentatif pop", "Quantitatif"], c: 1 },
+                { q: "Boule de Neige:", a: ["Statistique", "Participant référe autres, idéal populations cachées", "Aléatoire", "Pas bias"], c: 1 },
+                { q: "Focus Group VS Entretien:", a: ["Même", "FG: dynamique groupe. Entretien: profondeur individuelle", "Pas différence", "Entretien mieux"], c: 1 },
+                { q: "Réflexivité chercheur:", a: ["Pas important", "Conscient biais, valeurs, influence - élément éthique", "Aucun impact", "Ignorer"], c: 1 },
+                { q: "Crédibilité (Lincoln):", a: ["Nombre participants", "Résultats reflètent expérience participant, prolonged engagement", "Statistiques", "P-values"], c: 1 },
+                { q: "Codage ouvert:", a: ["Finale", "Identifier concepts et labels émergents, première étape", "Fermer données", "Validation"], c: 1 }
+            ]},
+            { questions: [
+                { q: "Moyenne VS Médiane:", a: ["Pareil", "Moyenne sensible extrêmes. Médiane robuste", "Invers", "Pas différence"], c: 1 },
+                { q: "Écart-type mesure:", a: ["Centre", "Dispersion autour moyenne", "Tendance", "Corrélation"], c: 1 },
+                { q: "Pearson r entre:", a: ["0-100", "-1 et +1", "0-1", "-100 et +100"], c: 1 },
+                { q: "r = 0.85 signifie:", a: ["Faible", "Forte corrélation positive", "Aucun lien", "Parfait négatif"], c: 1 },
+                { q: "Corrélation = Causalité?", a: ["Oui toujours", "Non - peut avoir variable confondante", "Souvent", "Généralement"], c: 1 },
+                { q: "R² 0.75 signifie:", a: ["Faible", "75% variance Y expliquée par variables", "Pas bon", "Aucun"], c: 1 },
+                { q: "Coefficient régression significatif si:", a: ["Toujours", "p < 0.05", "Estimation standardisée", "R² élevé"], c: 1 },
+                { q: "Distribution symétrique:", a: ["Asymétrique", "Moyenne = Médiane = Mode", "Bimodale", "Pas normal"], c: 1 }
+            ]}
+        ];
+
+        function initializeQuiz(tabName) {
+            const match = tabName.match(/course(\d+)|quiz(\d+)/);
+            if (!match) return;
+
+            const subjectIndex = match[1] || match[2];
+            if (tabName.startsWith('quiz') && !document.getElementById(tabName).querySelector('.question-card')) {
+                generateQuiz(subjectIndex);
+            }
+        }
+
+        function generateQuiz(subjectIndex) {
+            if (!quizData[subjectIndex]) return;
+            const quiz = quizData[subjectIndex];
+            let html = '';
+            quiz.questions.forEach((q, i) => {
+                html += `<div class="question-card">
+                    <div class="question-number">Q${i+1}/${quiz.questions.length}</div>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options">
+                        ${q.a.map((opt, idx) => `<div class="option" onclick="selectOption(this, ${subjectIndex}, ${i}, ${idx})">${opt}</div>`).join('')}
+                    </div>
+                </div>`;
+            });
+            document.getElementById('quiz' + subjectIndex + '-container').innerHTML = html;
+        }
+
+        function selectOption(el, sIdx, qIdx, optIdx) {
+            el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function submitQuiz(subjectIndex) {
+            const quiz = quizData[subjectIndex];
+            let score = 0, answered = 0;
+            document.querySelectorAll(`#quiz${subjectIndex}-container .question-card`).forEach((card, i) => {
+                const selected = card.querySelector('.option.selected');
+                if (selected) {
+                    answered++;
+                    const opts = card.querySelectorAll('.option');
+                    opts.forEach((o, idx) => {
+                        if (idx === quiz.questions[i].c) o.classList.add('correct');
+                        else if (o.classList.contains('selected')) o.classList.add('incorrect');
+                    });
+                    if (Array.from(opts).indexOf(selected) === quiz.questions[i].c) score++;
+                }
+            });
+            const pct = answered > 0 ? Math.round((score / answered) * 100) : 0;
+            document.getElementById('quiz' + subjectIndex + '-container').innerHTML += `
+                <div class="quiz-result">
+                    <div class="result-score">${score}/${answered}</div>
+                    <div class="result-message">${pct}% ${pct >= 80 ? '✓ Excellent!' : pct >= 60 ? '→ Bon travail' : '→ Continuez!'}</div>
+                </div>
+            `;
+            document.querySelector(`#quiz${subjectIndex} .btn-primary`).style.display = 'none';
+        }
+
+        function submitExam(subjectIndex) {
+            alert('Examen soumis! Vérifiez vos réponses avec votre professeur.');
+        }
+    </script>
+</body>
+</html>
