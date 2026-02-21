@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CEDEO Ride — Plateforme de covoiturage interne pour la région Ouest CEDEO (Saint-Gobain)">
+  <meta name="theme-color" content="#003DA5">
+  <title>CEDEO Ride — Covoiturage Région Ouest</title>
+
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23003DA5'/%3E%3Cpath d='M10 30h28a3 3 0 003-3v-4a3 3 0 00-.9-2.1L34 14.8a3 3 0 00-2.1-.8H16.1a3 3 0 00-2.1.8L7.9 20.9A3 3 0 007 23v4a3 3 0 003 3z' fill='%23fff' opacity='.95'/%3E%3Ccircle cx='16' cy='31.5' r='3.5' fill='%23003DA5'/%3E%3Ccircle cx='32' cy='31.5' r='3.5' fill='%23003DA5'/%3E%3Cpath d='M36 8c-3 0-6 1.5-7.5 4.5 0 0 1.5-.8 3.8-.8 2.2 0 3.7 1.5 3.7 3.7s-1.5 3.7-3.7 3.7c2.2-.8 6.5-3 6.5-6.5 0-2.5-1-4.6-2.8-4.6z' fill='%2322c55e'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts — Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+
+  <!-- Chart.js (optionnel, via CDN) -->
+  <script>
+    window.chartJsLoaded = false;
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+    onload="window.chartJsLoaded = true"
+    onerror="console.log('Chart.js non disponible, graphiques CSS utilisés.')"
+    async></script>
+</head>
+<body>
+  <!-- Application SPA -->
+  <div id="app"></div>
+
+  <!-- Scripts JS (ordre important) -->
+  <script src="js/utils.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/matching.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/trips.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
