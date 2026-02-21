@@ -12,49 +12,59 @@ const Auth = (() => {
     const app = document.getElementById('app-content');
     app.innerHTML = `
       <div class="login-page">
-        <div class="card login-card">
-          <div class="login-logo">
-            ${window.AppIcons.logoFull()}
-            <p>Covoiturage interne — Région Ouest</p>
+        <div class="login-image">
+          <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80" alt="Covoiturage" loading="lazy">
+          <div class="login-image-text">
+            <h2>Partagez la route, pas les frais.</h2>
+            <p>Rejoignez vos collègues CEDEO pour des trajets plus économiques, plus écologiques et plus conviviaux.</p>
           </div>
-          <form id="login-form" novalidate>
-            <div style="display:flex;flex-direction:column;gap:var(--space-4)">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label" for="login-firstname">Prénom *</label>
-                  <input class="form-input" type="text" id="login-firstname" placeholder="Votre prénom" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="login-lastname">Nom *</label>
-                  <input class="form-input" type="text" id="login-lastname" placeholder="Votre nom" required>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="login-email">Email professionnel *</label>
-                <input class="form-input" type="email" id="login-email" placeholder="prenom.nom@cedeo.fr" required>
-                <span class="form-hint">@cedeo.fr ou @saint-gobain.com</span>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="login-agency">Agence de rattachement *</label>
-                <select class="form-select" id="login-agency" required>
-                  <option value="">Sélectionnez votre agence</option>
-                  ${Utils.AGENCIES.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="login-phone">Téléphone (optionnel)</label>
-                <input class="form-input" type="tel" id="login-phone" placeholder="06 XX XX XX XX">
-              </div>
-              <div id="login-error" class="form-error" style="display:none"></div>
-              <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
-                Se connecter / S'inscrire
-              </button>
+        </div>
+        <div class="login-form-side">
+          <div class="login-card">
+            <div class="login-logo">
+              ${window.AppIcons.logoFull()}
+              <h1>Bienvenue</h1>
+              <p>Connectez-vous pour accéder au covoiturage interne</p>
             </div>
-          </form>
-          <div style="text-align:center;margin-top:var(--space-4)">
-            <p style="font-size:var(--font-size-xs);color:var(--color-text-light)">
-              En vous connectant, vous accédez à la plateforme de covoiturage<br>de la région Ouest CEDEO.
-            </p>
+            <form id="login-form" novalidate>
+              <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="login-firstname">Prénom *</label>
+                    <input class="form-input" type="text" id="login-firstname" placeholder="Votre prénom" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="login-lastname">Nom *</label>
+                    <input class="form-input" type="text" id="login-lastname" placeholder="Votre nom" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="login-email">Email professionnel *</label>
+                  <input class="form-input" type="email" id="login-email" placeholder="prenom.nom@cedeo.fr" required>
+                  <span class="form-hint">@cedeo.fr ou @saint-gobain.com</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="login-agency">Agence de rattachement *</label>
+                  <select class="form-select" id="login-agency" required>
+                    <option value="">Sélectionnez votre agence</option>
+                    ${Utils.AGENCIES.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="login-phone">Téléphone (optionnel)</label>
+                  <input class="form-input" type="tel" id="login-phone" placeholder="06 XX XX XX XX">
+                </div>
+                <div id="login-error" class="form-error" style="display:none"></div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                  Se connecter / S'inscrire
+                </button>
+              </div>
+            </form>
+            <div style="text-align:center;margin-top:var(--space-6)">
+              <p style="font-size:var(--font-size-xs);color:var(--color-text-light)">
+                En vous connectant, vous accédez à la plateforme de covoiturage<br>de la région Ouest CEDEO (Saint-Gobain).
+              </p>
+            </div>
           </div>
         </div>
       </div>
