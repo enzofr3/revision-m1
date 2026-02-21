@@ -165,6 +165,16 @@ const Auth = (() => {
             ${badges.map(b => `<span class="badge badge-success">${b.emoji} ${b.label}</span>`).join('')}
           </div>
         ` : ''}
+        ${typeof Gamification !== 'undefined' ? (() => {
+          const level = Gamification.getUserLevel(user.id);
+          const { unlocked } = Gamification.getUserAchievements(user.id);
+          return `
+            <div style="margin-top:var(--space-4);display:flex;align-items:center;justify-content:center;gap:var(--space-3)">
+              <div style="width:32px;height:32px;border-radius:50%;background:${level.color};display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:14px">${level.level}</div>
+              <span style="opacity:0.9;font-size:var(--font-size-sm)">${level.name} · ${unlocked.length} achievements</span>
+            </div>
+          `;
+        })() : ''}
       </div>
       <div class="container">
         <div class="profile-section">
@@ -201,6 +211,14 @@ const Auth = (() => {
         ` : ''}
 
         ${isOwn ? `
+          <div class="profile-section">
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+              <a href="#/challenges" class="btn btn-outline btn-sm">🏆 Mes challenges</a>
+              <a href="#/events" class="btn btn-outline btn-sm">⭐ Mes favoris</a>
+              <a href="#/map" class="btn btn-outline btn-sm">🗺️ Carte</a>
+              <button class="btn btn-ghost btn-sm" onclick="CedeoStore.logout();App.navigate('/');App.renderShell();">Déconnexion</button>
+            </div>
+          </div>
           <div class="profile-section">
             <div class="profile-section-title">Modifier mon profil</div>
             <div class="card card-flat" style="padding:var(--space-4)">

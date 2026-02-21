@@ -168,6 +168,47 @@ const Trips = (() => {
         `}
       </div>
 
+      ${currentUser ? `
+      <!-- ===== Challenges & Événements ===== -->
+      <div class="container" style="padding-top:var(--space-10)">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:var(--space-4)">
+          <!-- Challenge card -->
+          <div class="card card-clickable" onclick="App.navigate('/challenges')" style="padding:var(--space-6);border-left:4px solid #f59e0b">
+            <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
+              <span style="font-size:28px">🏆</span>
+              <div>
+                <div style="font-weight:var(--font-weight-bold)">Challenges du mois</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Relevez les défis et gagnez des badges</div>
+              </div>
+            </div>
+            <div style="font-size:var(--font-size-sm);color:var(--color-primary);font-weight:var(--font-weight-medium)">Voir mes challenges →</div>
+          </div>
+          <!-- Carte interactive -->
+          <div class="card card-clickable" onclick="App.navigate('/map')" style="padding:var(--space-6);border-left:4px solid #003DA5">
+            <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
+              <span style="font-size:28px">🗺️</span>
+              <div>
+                <div style="font-weight:var(--font-weight-bold)">Carte Interactive</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Explorez les agences et trajets sur la carte</div>
+              </div>
+            </div>
+            <div style="font-size:var(--font-size-sm);color:var(--color-primary);font-weight:var(--font-weight-medium)">Ouvrir la carte →</div>
+          </div>
+          <!-- Événements -->
+          <div class="card card-clickable" onclick="App.navigate('/events')" style="padding:var(--space-6);border-left:4px solid #16a34a">
+            <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
+              <span style="font-size:28px">📅</span>
+              <div>
+                <div style="font-weight:var(--font-weight-bold)">Événements Région Ouest</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Challenges collectifs et rencontres</div>
+              </div>
+            </div>
+            <div style="font-size:var(--font-size-sm);color:var(--color-primary);font-weight:var(--font-weight-medium)">Découvrir les événements →</div>
+          </div>
+        </div>
+      </div>
+      ` : ''}
+
       <!-- ===== Comment ça marche ===== -->
       <div class="how-it-works">
         <div class="container" style="text-align:center">
@@ -396,6 +437,21 @@ const Trips = (() => {
                   <span class="badge badge-primary">🔄 Trajet récurrent : ${trip.recurringDays?.map(d => ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][d]).join(', ') || 'Tous les jours'}</span>
                 </div>
               ` : ''}
+
+              ${trip.fromId && typeof MapModule !== 'undefined' ? `
+                <div class="divider"></div>
+                <div style="display:flex;gap:var(--space-4);align-items:center">
+                  <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Météo départ</div>
+                  <span style="font-size:18px">${MapModule.getWeatherEmoji(trip.fromId)}</span>
+                  <span style="font-size:var(--font-size-sm);font-weight:var(--font-weight-medium)">${MapModule.getWeatherTemp(trip.fromId)}°C — ${MapModule.getWeatherDesc(trip.fromId)}</span>
+                  ${trip.toId ? `
+                    <span style="color:var(--color-text-light);margin:0 var(--space-2)">|</span>
+                    <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Arrivée</div>
+                    <span style="font-size:18px">${MapModule.getWeatherEmoji(trip.toId)}</span>
+                    <span style="font-size:var(--font-size-sm);font-weight:var(--font-weight-medium)">${MapModule.getWeatherTemp(trip.toId)}°C</span>
+                  ` : ''}
+                </div>
+              ` : ''}
             </div>
 
             <!-- Passagers -->
@@ -453,6 +509,15 @@ const Trips = (() => {
               ` : ''}
             </div>
 
+            <!-- Save to favorites -->
+            ${currentUser && trip.fromId && trip.toId ? `
+              <div class="card" style="margin-bottom:var(--space-6)">
+                <button class="btn btn-outline btn-sm" id="save-fav-btn" style="width:100%">
+                  ⭐ Sauvegarder cet itinéraire
+                </button>
+              </div>
+            ` : ''}
+
             <!-- Actions -->
             <div class="card">
               ${isPast ? `
@@ -501,6 +566,24 @@ const Trips = (() => {
     document.getElementById('book-trip-btn')?.addEventListener('click', () => bookTrip(trip));
     document.getElementById('cancel-trip-btn')?.addEventListener('click', () => cancelTrip(trip));
     document.getElementById('cancel-booking-btn')?.addEventListener('click', () => cancelBooking(existingBooking));
+
+    // Save to favorites
+    document.getElementById('save-fav-btn')?.addEventListener('click', () => {
+      if (typeof Events !== 'undefined' && currentUser) {
+        const time = new Date(trip.departureTime);
+        Events.addFavorite(currentUser.id, {
+          fromId: trip.fromId,
+          fromName: trip.fromName,
+          toId: trip.toId,
+          toName: trip.toName,
+          defaultTime: `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`,
+          defaultSeats: trip.seats
+        });
+        window.App.showToast('Itinéraire sauvegardé dans vos favoris !', 'success');
+        document.getElementById('save-fav-btn').textContent = '✓ Sauvegardé';
+        document.getElementById('save-fav-btn').disabled = true;
+      }
+    });
   }
 
   /**

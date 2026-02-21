@@ -1390,6 +1390,754 @@
 ::-webkit-scrollbar-thumb { background: var(--color-border-dark); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-light); }
 
+/* =============================================
+   INTERACTIVE MAP PAGE — Leaflet + sidebar
+   ============================================= */
+.map-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  height: calc(100vh - var(--header-height));
+}
+
+@media (min-width: 768px) {
+  .map-page {
+    grid-template-columns: 380px 1fr;
+  }
+}
+
+.map-sidebar {
+  overflow-y: auto;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding-bottom: var(--space-8);
+}
+
+@media (max-width: 767px) {
+  .map-sidebar {
+    max-height: 40vh;
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+.map-sidebar-header {
+  padding: var(--space-5) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.map-sidebar-header h2 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.map-container {
+  min-height: 400px;
+  z-index: 1;
+}
+
+/* Map Filters */
+.map-filters {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.map-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.map-filter-btn.active,
+.map-filter-btn:hover {
+  background: var(--color-primary-bg);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Map Weather */
+.map-section-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--space-4) var(--space-5) var(--space-2);
+}
+
+.map-weather-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  padding: 0 var(--space-5) var(--space-3);
+}
+
+.map-weather-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+}
+
+.map-weather-emoji { font-size: 20px; }
+
+.map-weather-city {
+  font-weight: var(--font-weight-medium);
+  font-size: 11px;
+}
+
+.map-weather-temp {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.map-weather-desc {
+  font-size: 10px;
+  color: var(--color-text-light);
+}
+
+/* Map Agency List */
+.map-agency-list {
+  padding: 0 var(--space-3);
+}
+
+.map-agency-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.map-agency-item:hover {
+  background: var(--color-primary-bg);
+}
+
+.map-agency-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.map-agency-info { flex: 1; }
+
+.map-agency-name {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.map-agency-detail {
+  font-size: 11px;
+  color: var(--color-text-light);
+}
+
+.map-agency-weather {
+  font-size: 18px;
+}
+
+/* Map Departures */
+.map-departures-section {
+  border-top: 1px solid var(--color-divider);
+}
+
+.map-departure-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.map-departure-item:hover {
+  background: var(--color-primary-bg);
+}
+
+.map-departure-time {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  min-width: 46px;
+  color: var(--color-primary);
+}
+
+.map-departure-route {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.map-departure-driver {
+  font-size: 11px;
+  color: var(--color-text-light);
+}
+
+/* Map Markers */
+.map-marker-agency {
+  background: none !important;
+  border: none !important;
+}
+
+.map-marker-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.map-marker-label {
+  background: var(--color-surface);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Map Popup */
+.map-popup {
+  font-family: var(--font-family);
+  font-size: 13px;
+}
+
+.map-popup-title {
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 4px;
+}
+
+.map-popup-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.map-popup-weather {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.map-popup-link {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.map-popup-link:hover { text-decoration: underline; }
+
+/* =============================================
+   GAMIFICATION — Challenges, Achievements
+   ============================================= */
+
+/* Level Card */
+.gamif-level-card {
+  background: linear-gradient(135deg, var(--color-primary-bg) 0%, #fff 100%);
+  padding: var(--space-6);
+}
+
+.gamif-level-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.gamif-level-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.gamif-level-number {
+  font-size: 28px;
+  font-weight: var(--font-weight-bold);
+  color: #fff;
+}
+
+.gamif-level-info { flex: 1; }
+
+.gamif-level-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-1);
+}
+
+.gamif-level-progress-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.gamif-level-bar {
+  height: 8px;
+  background: var(--color-divider);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-1);
+}
+
+.gamif-level-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius-full);
+  transition: width 0.8s ease;
+}
+
+.gamif-level-next {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+}
+
+.gamif-user-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  text-align: center;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.gamif-stat-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.gamif-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* Challenges Grid */
+.gamif-challenges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.gamif-challenge {
+  padding: var(--space-5);
+  transition: border-color var(--transition-fast);
+}
+
+.gamif-challenge.completed {
+  border: 2px solid var(--color-success);
+  background: linear-gradient(135deg, #f0fdf4 0%, #fff 100%);
+}
+
+.gamif-challenge-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.gamif-challenge-icon { font-size: 28px; }
+
+.gamif-challenge-info { flex: 1; }
+
+.gamif-challenge-name {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+.gamif-challenge-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.gamif-challenge-check {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  font-size: 14px;
+}
+
+.gamif-progress-bar {
+  height: 8px;
+  background: var(--color-divider);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.gamif-progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width 0.8s ease;
+}
+
+.gamif-progress-fill.complete {
+  background: var(--color-success);
+}
+
+.gamif-progress-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+/* Achievements Grid */
+.gamif-achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.gamif-achievement {
+  text-align: center;
+  padding: var(--space-5) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+}
+
+.gamif-achievement.unlocked {
+  background: #fff;
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0,61,165,0.08);
+}
+
+.gamif-achievement.unlocked:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,61,165,0.12);
+}
+
+.gamif-achievement.locked {
+  opacity: 0.5;
+  background: var(--color-bg);
+}
+
+.gamif-achievement-icon {
+  font-size: 36px;
+  margin-bottom: var(--space-2);
+}
+
+.gamif-achievement-name {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-1);
+}
+
+.gamif-achievement-desc {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.3;
+}
+
+/* Agency Ranking */
+.gamif-agency-ranking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.gamif-agency-rank-item {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.gamif-agency-rank-item:hover { background: var(--color-divider); }
+.gamif-agency-rank-item.top-3 { background: var(--color-primary-bg); }
+
+.gamif-rank-position {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  background: var(--color-divider);
+  color: var(--color-text-secondary);
+}
+
+.gamif-rank-position.gold { background: #fef3c7; color: #d97706; }
+.gamif-rank-position.silver { background: #e5e7eb; color: #6b7280; }
+.gamif-rank-position.bronze { background: #fed7aa; color: #c2410c; }
+
+.gamif-rank-info { min-width: 0; }
+
+.gamif-rank-name {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.gamif-rank-detail {
+  font-size: 11px;
+  color: var(--color-text-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gamif-rank-score { text-align: center; }
+
+.gamif-rank-score-value {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+}
+
+.gamif-rank-score-label {
+  font-size: 10px;
+  color: var(--color-text-light);
+}
+
+.gamif-rank-bar-bg {
+  width: 80px;
+  height: 6px;
+  background: var(--color-divider);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.gamif-rank-bar {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width 0.6s ease;
+}
+
+/* =============================================
+   EVENTS — Cards, Favorites
+   ============================================= */
+
+/* Events List */
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.event-card {
+  overflow: hidden;
+  padding: 0;
+}
+
+.event-card-image {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.event-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.event-card:hover .event-card-image img {
+  transform: scale(1.03);
+}
+
+.event-card-type {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.event-card-body {
+  padding: var(--space-5) var(--space-6);
+}
+
+.event-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.event-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.event-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+.event-card-date {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+.event-card-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-4);
+}
+
+.event-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.event-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+}
+
+.event-reward {
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-4);
+}
+
+.event-card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-divider);
+}
+
+/* Favorites Grid */
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-4);
+}
+
+.favorite-card {
+  padding: var(--space-5);
+}
+
+.favorite-card.favorite-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px dashed var(--color-border);
+  background: transparent;
+  box-shadow: none;
+  min-height: 140px;
+  color: var(--color-text-secondary);
+  transition: all var(--transition-base);
+}
+
+.favorite-card.favorite-add:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.favorite-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.favorite-route {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+.favorite-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* =============================================
+   RESPONSIVE — New features
+   ============================================= */
+@media (max-width: 640px) {
+  .gamif-user-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gamif-achievements-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gamif-agency-rank-item {
+    grid-template-columns: 32px 1fr auto;
+  }
+
+  .gamif-rank-bar-bg { display: none; }
+
+  .favorites-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-card-image { height: 140px; }
+}
+
 /* --- Print --- */
 @media print {
   .header, .bottom-nav, .toast-container { display: none; }
