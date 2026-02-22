@@ -246,11 +246,11 @@
 
 .search-bar .form-input {
   border: 1px solid var(--color-border);
-  color: var(--color-text);
+  color: var(--color-text-secondary);
 }
 
 .search-bar .form-input::placeholder {
-  color: var(--color-text-light);
+  color: var(--color-text-secondary);
 }
 
 .search-bar .btn {
