@@ -42,7 +42,7 @@ const Negotiations = (() => {
         type: 'time_negotiation',
         title: 'Proposition d\'horaire',
         message: `${proposer ? proposer.firstName : 'Un collègue'} propose ${Utils.formatTime(proposedTime)} pour votre trajet ${trip.fromName} → ${trip.toName}${message ? ' : "' + message + '"' : ''}.`,
-        icon: '🕐',
+        icon: 'clock',
         tripId,
         negotiationId: neg.id
       });
@@ -75,7 +75,7 @@ const Negotiations = (() => {
         counterTime ?
           `Le conducteur propose ${Utils.formatTime(counterTime)} à la place.` :
           `Le conducteur ne peut pas modifier l'horaire.`,
-      icon: accepted ? '✅' : counterTime ? '🔄' : '❌',
+      icon: accepted ? AppIcons.i('check-circle', 18, 'var(--color-success)') : counterTime ? AppIcons.i('refresh', 18, 'var(--color-warning)') : AppIcons.i('x-circle', 18, 'var(--color-danger)'),
       tripId: neg.tripId
     });
   }

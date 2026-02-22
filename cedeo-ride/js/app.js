@@ -180,32 +180,32 @@ const App = (() => {
       </div>
       <div class="sidebar-section">
         <div class="sidebar-section-title">Covoiturage</div>
-        <a class="sidebar-link" href="#/" onclick="App.toggleSidebar()">🏠 Accueil</a>
-        <a class="sidebar-link" href="#/publish" onclick="App.toggleSidebar()">➕ Publier un trajet</a>
-        <a class="sidebar-link" href="#/dashboard" onclick="App.toggleSidebar()">📋 Mes trajets</a>
-        <a class="sidebar-link" href="#/map" onclick="App.toggleSidebar()">🗺️ Carte interactive</a>
+        <a class="sidebar-link" href="#/" onclick="App.toggleSidebar()">${AppIcons.i('home', 18)} Accueil</a>
+        <a class="sidebar-link" href="#/publish" onclick="App.toggleSidebar()">${AppIcons.i('plus', 18)} Publier un trajet</a>
+        <a class="sidebar-link" href="#/dashboard" onclick="App.toggleSidebar()">${AppIcons.i('clipboard', 18)} Mes trajets</a>
+        <a class="sidebar-link" href="#/map" onclick="App.toggleSidebar()">${AppIcons.i('map', 18)} Carte interactive</a>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-section-title">Communauté</div>
-        <a class="sidebar-link" href="#/neighbors" onclick="App.toggleSidebar()">📍 Voisins CEDEO</a>
-        <a class="sidebar-link" href="#/pools" onclick="App.toggleSidebar()">👥 Pools fixes</a>
-        <a class="sidebar-link" href="#/routines" onclick="App.toggleSidebar()">🔄 Mes routines</a>
-        <a class="sidebar-link" href="#/last-mile" onclick="App.toggleSidebar()">🚆 Dernier kilomètre</a>
+        <a class="sidebar-link" href="#/neighbors" onclick="App.toggleSidebar()">${AppIcons.i('pin', 18)} Voisins CEDEO</a>
+        <a class="sidebar-link" href="#/pools" onclick="App.toggleSidebar()">${AppIcons.i('users', 18)} Pools fixes</a>
+        <a class="sidebar-link" href="#/routines" onclick="App.toggleSidebar()">${AppIcons.i('refresh', 18)} Mes routines</a>
+        <a class="sidebar-link" href="#/last-mile" onclick="App.toggleSidebar()">${AppIcons.i('train', 18)} Dernier kilomètre</a>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-section-title">Impact & Progression</div>
-        <a class="sidebar-link" href="#/passport" onclick="App.toggleSidebar()">🌱 Passeport Vert</a>
-        <a class="sidebar-link" href="#/challenges" onclick="App.toggleSidebar()">🏆 Challenges</a>
-        <a class="sidebar-link" href="#/ambassadors" onclick="App.toggleSidebar()">⭐ Confiance & Ambassadeurs</a>
-        <a class="sidebar-link" href="#/events" onclick="App.toggleSidebar()">📅 Événements</a>
-        <a class="sidebar-link" href="#/stats" onclick="App.toggleSidebar()">📊 Impact & Statistiques</a>
+        <a class="sidebar-link" href="#/passport" onclick="App.toggleSidebar()">${AppIcons.i('leaf', 18)} Passeport Vert</a>
+        <a class="sidebar-link" href="#/challenges" onclick="App.toggleSidebar()">${AppIcons.i('trophy', 18)} Challenges</a>
+        <a class="sidebar-link" href="#/ambassadors" onclick="App.toggleSidebar()">${AppIcons.i('star', 18)} Confiance & Ambassadeurs</a>
+        <a class="sidebar-link" href="#/events" onclick="App.toggleSidebar()">${AppIcons.i('calendar', 18)} Événements</a>
+        <a class="sidebar-link" href="#/stats" onclick="App.toggleSidebar()">${AppIcons.i('chart', 18)} Impact & Statistiques</a>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-section-title">Mon compte</div>
-        <a class="sidebar-link" href="#/profile" onclick="App.toggleSidebar()">👤 Mon profil</a>
-        <a class="sidebar-link" href="#/messages" onclick="App.toggleSidebar()">💬 Messages</a>
-        <a class="sidebar-link" href="#/notifications" onclick="App.toggleSidebar()">🔔 Notifications</a>
-        <a class="sidebar-link" style="color:var(--color-text-light);cursor:pointer" onclick="CedeoStore.logout();App.navigate('/');App.renderShell();App.toggleSidebar()">🚪 Déconnexion</a>
+        <a class="sidebar-link" href="#/profile" onclick="App.toggleSidebar()">${AppIcons.i('user', 18)} Mon profil</a>
+        <a class="sidebar-link" href="#/messages" onclick="App.toggleSidebar()">${AppIcons.i('message', 18)} Messages</a>
+        <a class="sidebar-link" href="#/notifications" onclick="App.toggleSidebar()">${AppIcons.i('bell', 18)} Notifications</a>
+        <a class="sidebar-link" style="color:var(--color-text-light);cursor:pointer" onclick="CedeoStore.logout();App.navigate('/');App.renderShell();App.toggleSidebar()">${AppIcons.i('logout', 18)} Déconnexion</a>
       </div>
     `;
     document.body.appendChild(sidebar);

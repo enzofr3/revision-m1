@@ -10,7 +10,7 @@ const TrustSystem = (() => {
     {
       id: 'nouveau',
       name: 'Nouveau',
-      icon: '🌱',
+      iconName: 'seedling',
       color: '#94A3B8',
       minTrips: 0,
       minRating: 0,
@@ -20,7 +20,7 @@ const TrustSystem = (() => {
     {
       id: 'verifie',
       name: 'Vérifié',
-      icon: '✓',
+      iconName: 'check-circle',
       color: '#003DA5',
       minTrips: 3,
       minRating: 3.5,
@@ -30,7 +30,7 @@ const TrustSystem = (() => {
     {
       id: 'confirme',
       name: 'Confirmé',
-      icon: '⭐',
+      iconName: 'star',
       color: '#16a34a',
       minTrips: 10,
       minRating: 4.0,
@@ -40,7 +40,7 @@ const TrustSystem = (() => {
     {
       id: 'ambassadeur',
       name: 'Ambassadeur',
-      icon: '👑',
+      iconName: 'crown',
       color: '#d97706',
       minTrips: 25,
       minRating: 4.5,
@@ -99,7 +99,7 @@ const TrustSystem = (() => {
           type: 'sponsorship',
           title: 'Parrainage reçu !',
           message: `Un membre confirmé vous a parrainé. Votre niveau de confiance augmente !`,
-          icon: '🤝'
+          icon: 'handshake'
         });
       }
     } catch { /* ignore */ }
@@ -119,7 +119,7 @@ const TrustSystem = (() => {
 
     if (trust.id === 'nouveau') return '';
 
-    return `<span class="badge badge-trust-${trust.id}" style="font-size:${s === '20px' ? '10px' : '11px'}" title="${trust.name}">${trust.icon} ${trust.name}</span>`;
+    return `<span class="badge badge-trust-${trust.id}" style="font-size:${s === '20px' ? '10px' : '11px'};display:inline-flex;align-items:center;gap:4px" title="${trust.name}">${AppIcons.i(trust.iconName, 14, trust.color)} ${trust.name}</span>`;
   }
 
   function renderAmbassadorsPage() {
@@ -143,8 +143,8 @@ const TrustSystem = (() => {
           <div class="card" style="margin-bottom:var(--space-6);overflow:hidden;padding:0">
             <div style="background:linear-gradient(135deg, ${userTrust.color}15, ${userTrust.color}05);padding:var(--space-6)">
               <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-4)">
-                <div style="width:64px;height:64px;border-radius:var(--radius-full);background:${userTrust.color};display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;box-shadow:0 4px 12px ${userTrust.color}40">
-                  ${userTrust.icon}
+                <div style="width:64px;height:64px;border-radius:var(--radius-full);background:${userTrust.color};display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 12px ${userTrust.color}40">
+                  ${AppIcons.i(userTrust.iconName, 28, '#fff')}
                 </div>
                 <div>
                   <div style="font-size:var(--font-size-xl);font-weight:var(--font-weight-bold)">${userTrust.name}</div>
@@ -183,7 +183,7 @@ const TrustSystem = (() => {
             ${LEVELS.map(l => `
               <div class="card card-compact" style="border-left:4px solid ${l.color}">
                 <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
-                  <div style="width:40px;height:40px;border-radius:var(--radius-full);background:${l.color}15;display:flex;align-items:center;justify-content:center;font-size:20px">${l.icon}</div>
+                  <div style="width:40px;height:40px;border-radius:var(--radius-full);background:${l.color}15;display:flex;align-items:center;justify-content:center">${AppIcons.i(l.iconName, 20, l.color)}</div>
                   <div>
                     <div style="font-weight:var(--font-weight-semibold)">${l.name}</div>
                     <div style="font-size:var(--font-size-xs);color:var(--color-text-light)">${l.minTrips}+ trajets · ${l.minRating}+ ★</div>
@@ -209,7 +209,7 @@ const TrustSystem = (() => {
                       <div>
                         <div style="font-weight:var(--font-weight-semibold)">${Utils.escapeHtml(a.user.firstName)} ${Utils.escapeHtml(a.user.lastName)}</div>
                         <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">${agency ? agency.shortName : ''}</div>
-                        <span class="badge badge-trust-ambassadeur" style="margin-top:var(--space-1)">👑 Ambassadeur</span>
+                        <span class="badge badge-trust-ambassadeur" style="margin-top:var(--space-1);display:inline-flex;align-items:center;gap:4px">${AppIcons.i('crown', 14, '#d97706')} Ambassadeur</span>
                       </div>
                     </div>
                   </div>
@@ -230,7 +230,7 @@ const TrustSystem = (() => {
                 <div style="flex:1">
                   <div style="font-weight:var(--font-weight-medium);font-size:var(--font-size-sm)">${Utils.escapeHtml(u.user.firstName)} ${Utils.escapeHtml(u.user.lastName)}</div>
                 </div>
-                <span class="badge badge-trust-${u.trust.id}">${u.trust.icon} ${u.trust.name}</span>
+                <span class="badge badge-trust-${u.trust.id}" style="display:inline-flex;align-items:center;gap:4px">${AppIcons.i(u.trust.iconName, 14, u.trust.color)} ${u.trust.name}</span>
                 <span style="font-size:var(--font-size-xs);color:var(--color-text-light)">${u.trust.totalTrips} trajets</span>
               </div>
             `).join('')}

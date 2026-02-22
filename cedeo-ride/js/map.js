@@ -149,10 +149,10 @@ const MapModule = (() => {
         <div class="map-popup">
           <div class="map-popup-title">${Utils.escapeHtml(agency.name)}</div>
           <div class="map-popup-stats">
-            <span>👥 ${users.length} membre${users.length > 1 ? 's' : ''}</span>
-            <span>🚗 ${agencyTrips.length} trajet${agencyTrips.length > 1 ? 's' : ''}</span>
+            <span>${AppIcons.i('users', 14)} ${users.length} membre${users.length > 1 ? 's' : ''}</span>
+            <span>${AppIcons.i('car', 14)} ${agencyTrips.length} trajet${agencyTrips.length > 1 ? 's' : ''}</span>
           </div>
-          <div class="map-popup-weather">${getWeatherEmoji(agency.id)} ${getWeatherTemp(agency.id)}°C — ${getWeatherDesc(agency.id)}</div>
+          <div class="map-popup-weather">${getWeatherIcon(agency.id)} ${getWeatherTemp(agency.id)}°C — ${getWeatherDesc(agency.id)}</div>
           <a href="#/search?to=${agency.id}" class="map-popup-link">Voir les trajets →</a>
         </div>
       `);
@@ -184,8 +184,8 @@ const MapModule = (() => {
         <div class="map-popup">
           <div class="map-popup-title">${Utils.escapeHtml(trip.fromName.replace('CEDEO ', ''))} → ${Utils.escapeHtml(trip.toName.replace('CEDEO ', ''))}</div>
           <div class="map-popup-stats">
-            <span>🕐 ${Utils.formatDateShort(trip.departureTime)} à ${Utils.formatTime(trip.departureTime)}</span>
-            <span>💺 ${availableSeats} place${availableSeats > 1 ? 's' : ''}</span>
+            <span>${AppIcons.i('clock', 14)} ${Utils.formatDateShort(trip.departureTime)} à ${Utils.formatTime(trip.departureTime)}</span>
+            <span>${AppIcons.i('seat', 14)} ${availableSeats} place${availableSeats > 1 ? 's' : ''}</span>
           </div>
           ${driver ? `<div style="font-size:12px;margin-top:4px">Conducteur : ${Utils.escapeHtml(driver.firstName)} ${driver.lastName.charAt(0)}.</div>` : ''}
           <a href="#/trip/${trip.id}" class="map-popup-link">Réserver →</a>
@@ -275,17 +275,21 @@ const MapModule = (() => {
     return weatherCache;
   }
 
-  function getWeatherEmoji(agencyId) {
+  function getWeatherIcon(agencyId) {
     const weather = getWeather()[agencyId];
-    if (!weather) return '☁️';
+    if (!weather) return AppIcons.i('cloud', 20);
     const map = {
-      'Ensoleillé': '☀️', 'Beau temps': '☀️', 'Chaud': '🌡️',
-      'Éclaircies': '⛅', 'Variable': '🌤️',
-      'Nuageux': '☁️', 'Couvert': '☁️',
-      'Pluie': '🌧️', 'Pluie fine': '🌦️', 'Averses': '🌧️',
-      'Brouillard': '🌫️', 'Venteux': '💨'
+      'Ensoleillé': 'sun', 'Beau temps': 'sun', 'Chaud': 'thermometer',
+      'Éclaircies': 'cloud-sun', 'Variable': 'cloud-sun',
+      'Nuageux': 'cloud', 'Couvert': 'cloud',
+      'Pluie': 'cloud-rain', 'Pluie fine': 'cloud-drizzle', 'Averses': 'cloud-rain',
+      'Brouillard': 'fog', 'Venteux': 'wind'
     };
-    return map[weather.condition] || '☁️';
+    return AppIcons.i(map[weather.condition] || 'cloud', 20);
+  }
+
+  function getWeatherEmoji(agencyId) {
+    return getWeatherIcon(agencyId);
   }
 
   function getWeatherTemp(agencyId) {
@@ -319,6 +323,7 @@ const MapModule = (() => {
   return {
     renderMapPage,
     getWeatherEmoji,
+    getWeatherIcon,
     getWeatherTemp,
     getWeatherDesc
   };

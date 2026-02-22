@@ -182,7 +182,7 @@ const Routines = (() => {
                 return `
                   <div class="card card-compact">
                     <div style="display:flex;align-items:center;gap:var(--space-4)">
-                      <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--color-primary-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔄</div>
+                      <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--color-primary-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0">${AppIcons.i('refresh', 24, 'var(--color-primary)')}</div>
                       <div style="flex:1">
                         <div style="font-weight:var(--font-weight-semibold);font-size:var(--font-size-sm)">
                           ${Utils.escapeHtml(r.fromName)} → ${Utils.escapeHtml(r.toName)}
@@ -206,7 +206,7 @@ const Routines = (() => {
         ` : `
           <div class="card" style="margin-bottom:var(--space-6)">
             <div class="empty-state">
-              <div style="font-size:48px;margin-bottom:var(--space-4)">🔍</div>
+              <div style="margin-bottom:var(--space-4)">${AppIcons.i('search', 48, '#6B7280')}</div>
               <div class="empty-state-title">Pas encore de routine détectée</div>
               <div class="empty-state-text">Continuez à utiliser CEDEO Ride et vos habitudes seront détectées automatiquement après 3 trajets similaires.</div>
             </div>
@@ -215,7 +215,7 @@ const Routines = (() => {
 
         <div class="card" style="background:var(--color-eco-bg);border-color:rgba(34,197,94,0.2)">
           <div style="display:flex;align-items:flex-start;gap:var(--space-3)">
-            <span style="font-size:24px">💡</span>
+            <span>${AppIcons.i('lightbulb', 24, '#f59e0b')}</span>
             <div>
               <div style="font-weight:var(--font-weight-semibold);margin-bottom:var(--space-1)">Comment ça marche ?</div>
               <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary)">

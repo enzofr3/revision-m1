@@ -122,7 +122,7 @@ const Auth = (() => {
         type: 'welcome',
         title: 'Bienvenue sur CEDEO Ride !',
         message: 'Commencez par publier un trajet ou recherchez un covoiturage.',
-        icon: '🎉'
+        icon: 'confetti'
       });
 
       // Reset onboarding for new user
@@ -163,7 +163,7 @@ const Auth = (() => {
         <div class="profile-email">${Utils.escapeHtml(user.email)}</div>
         ${trustLevel ? `
           <div style="margin-top:var(--space-2)">
-            <span class="badge badge-trust-${trustLevel.id}" style="font-size:var(--font-size-xs)">${trustLevel.icon} ${trustLevel.name}</span>
+            <span class="badge badge-trust-${trustLevel.id}" style="font-size:var(--font-size-xs);display:inline-flex;align-items:center;gap:4px">${AppIcons.i(trustLevel.iconName, 14, trustLevel.color)} ${trustLevel.name}</span>
           </div>
         ` : ''}
         ${ratingData.count > 0 ? `
@@ -174,7 +174,7 @@ const Auth = (() => {
         ` : ''}
         ${badges.length > 0 ? `
           <div class="profile-badges">
-            ${badges.map(b => `<span class="badge badge-success">${b.emoji} ${b.label}</span>`).join('')}
+            ${badges.map(b => `<span class="badge badge-success" style="display:inline-flex;align-items:center;gap:4px">${AppIcons.i(b.iconName || 'star', 14)} ${b.label}</span>`).join('')}
           </div>
         ` : ''}
         ${typeof Gamification !== 'undefined' ? (() => {
@@ -193,7 +193,7 @@ const Auth = (() => {
           <div class="profile-section">
             <div class="card" style="text-align:center;background:linear-gradient(to right, #e8f5e9, #c8e6c9);border:none">
               <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-4)">
-                <span style="font-size:32px">${passportData.stage.emoji}</span>
+                <span>${AppIcons.i(passportData.stage.iconName || 'seedling', 32, passportData.stage.color)}</span>
                 <div>
                   <div style="font-weight:var(--font-weight-bold);color:#1b5e20">${passportData.stage.name}</div>
                   <div style="font-size:var(--font-size-sm);color:#388e3c">${passportData.totalCO2} kg CO2 économisé</div>
@@ -240,13 +240,13 @@ const Auth = (() => {
         ${isOwn ? `
           <div class="profile-section">
             <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
-              <a href="#/passport" class="btn btn-outline btn-sm">🌱 Passeport Vert</a>
-              <a href="#/challenges" class="btn btn-outline btn-sm">🏆 Challenges</a>
-              <a href="#/neighbors" class="btn btn-outline btn-sm">📍 Voisins</a>
-              <a href="#/pools" class="btn btn-outline btn-sm">👥 Mes pools</a>
-              <a href="#/routines" class="btn btn-outline btn-sm">🔄 Routines</a>
-              <a href="#/events" class="btn btn-outline btn-sm">📅 Événements</a>
-              <a href="#/map" class="btn btn-outline btn-sm">🗺️ Carte</a>
+              <a href="#/passport" class="btn btn-outline btn-sm">${AppIcons.i('leaf', 16)} Passeport Vert</a>
+              <a href="#/challenges" class="btn btn-outline btn-sm">${AppIcons.i('trophy', 16)} Challenges</a>
+              <a href="#/neighbors" class="btn btn-outline btn-sm">${AppIcons.i('pin', 16)} Voisins</a>
+              <a href="#/pools" class="btn btn-outline btn-sm">${AppIcons.i('users', 16)} Mes pools</a>
+              <a href="#/routines" class="btn btn-outline btn-sm">${AppIcons.i('refresh', 16)} Routines</a>
+              <a href="#/events" class="btn btn-outline btn-sm">${AppIcons.i('calendar', 16)} Événements</a>
+              <a href="#/map" class="btn btn-outline btn-sm">${AppIcons.i('map', 16)} Carte</a>
               <button class="btn btn-ghost btn-sm" onclick="CedeoStore.logout();App.navigate('/');App.renderShell();">Déconnexion</button>
             </div>
           </div>

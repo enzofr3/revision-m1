@@ -77,7 +77,7 @@ const Neighbors = (() => {
       type: 'neighbor_request',
       title: 'Demande de voisinage',
       message: `Un collègue proche de chez vous souhaite échanger pour du covoiturage !`,
-      icon: '📍',
+      icon: 'pin',
       fromUserId
     });
   }
@@ -150,7 +150,7 @@ const Neighbors = (() => {
         <!-- Mon adresse -->
         <div class="card" style="margin-bottom:var(--space-6)">
           <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-4)">
-            <div style="width:48px;height:48px;border-radius:var(--radius-full);background:var(--color-primary-bg);display:flex;align-items:center;justify-content:center;font-size:24px">📍</div>
+            <div style="width:48px;height:48px;border-radius:var(--radius-full);background:var(--color-primary-bg);display:flex;align-items:center;justify-content:center">${AppIcons.i('pin', 24, 'var(--color-primary)')}</div>
             <div>
               <div style="font-weight:var(--font-weight-semibold)">Ma localisation</div>
               <div style="font-size:var(--font-size-sm);color:var(--color-text-secondary)">${myLocation ? myLocation.commune : 'Non définie'}</div>

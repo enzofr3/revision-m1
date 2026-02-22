@@ -7,30 +7,30 @@ const Gamification = (() => {
 
   // Définition des achievements
   const ACHIEVEMENTS = [
-    { id: 'first_ride', name: 'Premier Pas', desc: 'Effectuer votre premier covoiturage', icon: '🎉', requirement: ctx => ctx.totalRides >= 1 },
-    { id: 'eco_starter', name: 'Éco-Débutant', desc: 'Économiser 5 kg de CO2', icon: '🌱', requirement: ctx => ctx.totalCO2 >= 5 },
-    { id: 'eco_warrior', name: 'Éco-Guerrier', desc: 'Économiser 50 kg de CO2', icon: '🌿', requirement: ctx => ctx.totalCO2 >= 50 },
-    { id: 'eco_hero', name: 'Héros Vert', desc: 'Économiser 200 kg de CO2', icon: '🌳', requirement: ctx => ctx.totalCO2 >= 200 },
-    { id: 'social_5', name: 'Sociable', desc: 'Covoiturer avec 5 collègues différents', icon: '🤝', requirement: ctx => ctx.uniquePeople >= 5 },
-    { id: 'social_10', name: 'Fédérateur', desc: 'Covoiturer avec 10 collègues différents', icon: '👥', requirement: ctx => ctx.uniquePeople >= 10 },
-    { id: 'driver_5', name: 'Chauffeur Confirmé', desc: 'Proposer 5 trajets en tant que conducteur', icon: '🚗', requirement: ctx => ctx.tripsAsDriver >= 5 },
-    { id: 'driver_20', name: 'Pilote Expert', desc: 'Proposer 20 trajets en tant que conducteur', icon: '🏎️', requirement: ctx => ctx.tripsAsDriver >= 20 },
-    { id: 'star_rating', name: 'Étoile Montante', desc: 'Obtenir une note moyenne de 4.5+', icon: '⭐', requirement: ctx => ctx.avgRating >= 4.5 && ctx.ratingCount >= 3 },
-    { id: 'all_agencies', name: 'Globe-Trotter Ouest', desc: 'Visiter les 10 agences de la région', icon: '🗺️', requirement: ctx => ctx.visitedAgencies >= 10 },
-    { id: 'km_100', name: 'Centenaire', desc: 'Parcourir 100 km en covoiturage', icon: '📏', requirement: ctx => ctx.totalKm >= 100 },
-    { id: 'km_500', name: 'Routard', desc: 'Parcourir 500 km en covoiturage', icon: '🛤️', requirement: ctx => ctx.totalKm >= 500 },
-    { id: 'km_1000', name: 'Marathonien', desc: 'Parcourir 1 000 km en covoiturage', icon: '🏅', requirement: ctx => ctx.totalKm >= 1000 },
-    { id: 'streak_5', name: 'Régulier', desc: 'Covoiturer 5 jours consécutifs', icon: '🔥', requirement: ctx => ctx.streak >= 5 },
-    { id: 'money_50', name: 'Économe', desc: 'Économiser 50€ en covoiturage', icon: '💰', requirement: ctx => ctx.moneySaved >= 50 },
-    { id: 'early_bird', name: 'Lève-tôt', desc: 'Prendre un covoiturage avant 7h00', icon: '🌅', requirement: ctx => ctx.earlyRides >= 1 }
+    { id: 'first_ride', name: 'Premier Pas', desc: 'Effectuer votre premier covoiturage', iconName: 'confetti', requirement: ctx => ctx.totalRides >= 1 },
+    { id: 'eco_starter', name: 'Éco-Débutant', desc: 'Économiser 5 kg de CO2', iconName: 'seedling', requirement: ctx => ctx.totalCO2 >= 5 },
+    { id: 'eco_warrior', name: 'Éco-Guerrier', desc: 'Économiser 50 kg de CO2', iconName: 'sprout', requirement: ctx => ctx.totalCO2 >= 50 },
+    { id: 'eco_hero', name: 'Héros Vert', desc: 'Économiser 200 kg de CO2', iconName: 'tree-deciduous', requirement: ctx => ctx.totalCO2 >= 200 },
+    { id: 'social_5', name: 'Sociable', desc: 'Covoiturer avec 5 collègues différents', iconName: 'handshake', requirement: ctx => ctx.uniquePeople >= 5 },
+    { id: 'social_10', name: 'Fédérateur', desc: 'Covoiturer avec 10 collègues différents', iconName: 'users', requirement: ctx => ctx.uniquePeople >= 10 },
+    { id: 'driver_5', name: 'Chauffeur Confirmé', desc: 'Proposer 5 trajets en tant que conducteur', iconName: 'car', requirement: ctx => ctx.tripsAsDriver >= 5 },
+    { id: 'driver_20', name: 'Pilote Expert', desc: 'Proposer 20 trajets en tant que conducteur', iconName: 'speed', requirement: ctx => ctx.tripsAsDriver >= 20 },
+    { id: 'star_rating', name: 'Étoile Montante', desc: 'Obtenir une note moyenne de 4.5+', iconName: 'star', requirement: ctx => ctx.avgRating >= 4.5 && ctx.ratingCount >= 3 },
+    { id: 'all_agencies', name: 'Globe-Trotter Ouest', desc: 'Visiter les 10 agences de la région', iconName: 'map', requirement: ctx => ctx.visitedAgencies >= 10 },
+    { id: 'km_100', name: 'Centenaire', desc: 'Parcourir 100 km en covoiturage', iconName: 'ruler', requirement: ctx => ctx.totalKm >= 100 },
+    { id: 'km_500', name: 'Routard', desc: 'Parcourir 500 km en covoiturage', iconName: 'road', requirement: ctx => ctx.totalKm >= 500 },
+    { id: 'km_1000', name: 'Marathonien', desc: 'Parcourir 1 000 km en covoiturage', iconName: 'medal', requirement: ctx => ctx.totalKm >= 1000 },
+    { id: 'streak_5', name: 'Régulier', desc: 'Covoiturer 5 jours consécutifs', iconName: 'flame', requirement: ctx => ctx.streak >= 5 },
+    { id: 'money_50', name: 'Économe', desc: 'Économiser 50€ en covoiturage', iconName: 'money', requirement: ctx => ctx.moneySaved >= 50 },
+    { id: 'early_bird', name: 'Lève-tôt', desc: 'Prendre un covoiturage avant 7h00', iconName: 'sunrise', requirement: ctx => ctx.earlyRides >= 1 }
   ];
 
   // Challenges mensuels
   const MONTHLY_CHALLENGES = [
-    { id: 'ch_rides_10', name: 'Objectif 10 trajets', desc: '10 covoiturages ce mois-ci', icon: '🎯', target: 10, type: 'rides' },
-    { id: 'ch_co2_30', name: 'Défi CO2', desc: 'Économiser 30 kg de CO2 ce mois-ci', icon: '🌍', target: 30, type: 'co2' },
-    { id: 'ch_new_people', name: 'Nouveaux Contacts', desc: 'Covoiturer avec 3 nouvelles personnes', icon: '🤝', target: 3, type: 'new_people' },
-    { id: 'ch_km_200', name: 'Challenge Distance', desc: 'Parcourir 200 km partagés ce mois-ci', icon: '🛣️', target: 200, type: 'km' }
+    { id: 'ch_rides_10', name: 'Objectif 10 trajets', desc: '10 covoiturages ce mois-ci', iconName: 'target', target: 10, type: 'rides' },
+    { id: 'ch_co2_30', name: 'Défi CO2', desc: 'Économiser 30 kg de CO2 ce mois-ci', iconName: 'globe', target: 30, type: 'co2' },
+    { id: 'ch_new_people', name: 'Nouveaux Contacts', desc: 'Covoiturer avec 3 nouvelles personnes', iconName: 'handshake', target: 3, type: 'new_people' },
+    { id: 'ch_km_200', name: 'Challenge Distance', desc: 'Parcourir 200 km partagés ce mois-ci', iconName: 'road', target: 200, type: 'km' }
   ];
 
   /**
@@ -301,17 +301,17 @@ const Gamification = (() => {
         </div>
 
         <!-- Challenges du mois -->
-        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">🎯 Challenges de ${currentMonth}</h2>
+        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">${AppIcons.i('target', 18)} Challenges de ${currentMonth}</h2>
         <div class="gamif-challenges-grid" style="margin-bottom:var(--space-8)">
           ${challenges.map(ch => `
             <div class="card gamif-challenge ${ch.completed ? 'completed' : ''}">
               <div class="gamif-challenge-header">
-                <span class="gamif-challenge-icon">${ch.icon}</span>
+                <span class="gamif-challenge-icon">${AppIcons.i(ch.iconName, 24)}</span>
                 <div class="gamif-challenge-info">
                   <div class="gamif-challenge-name">${ch.name}</div>
                   <div class="gamif-challenge-desc">${ch.desc}</div>
                 </div>
-                ${ch.completed ? '<span class="gamif-challenge-check">✓</span>' : ''}
+                ${ch.completed ? '<span class="gamif-challenge-check">' + AppIcons.i('check', 18, '#22c55e') + '</span>' : ''}
               </div>
               <div class="gamif-progress-bar">
                 <div class="gamif-progress-fill ${ch.completed ? 'complete' : ''}" style="width:${ch.progress}%"></div>
@@ -322,18 +322,18 @@ const Gamification = (() => {
         </div>
 
         <!-- Achievements -->
-        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">🏆 Achievements (${unlocked.length}/${ACHIEVEMENTS.length})</h2>
+        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">${AppIcons.i('trophy', 18)} Achievements (${unlocked.length}/${ACHIEVEMENTS.length})</h2>
         <div class="gamif-achievements-grid" style="margin-bottom:var(--space-8)">
           ${unlocked.map(a => `
             <div class="gamif-achievement unlocked">
-              <div class="gamif-achievement-icon">${a.icon}</div>
+              <div class="gamif-achievement-icon">${AppIcons.i(a.iconName, 28)}</div>
               <div class="gamif-achievement-name">${a.name}</div>
               <div class="gamif-achievement-desc">${a.desc}</div>
             </div>
           `).join('')}
           ${locked.map(a => `
             <div class="gamif-achievement locked">
-              <div class="gamif-achievement-icon">🔒</div>
+              <div class="gamif-achievement-icon">${AppIcons.i('lock', 28)}</div>
               <div class="gamif-achievement-name">${a.name}</div>
               <div class="gamif-achievement-desc">${a.desc}</div>
             </div>
@@ -341,7 +341,7 @@ const Gamification = (() => {
         </div>
 
         <!-- Compétition inter-agences -->
-        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">🏅 Compétition Inter-Agences</h2>
+        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">${AppIcons.i('medal', 18)} Compétition Inter-Agences</h2>
         <p style="color:var(--color-text-secondary);font-size:var(--font-size-sm);margin-bottom:var(--space-4)">
           Score = covoiturages par membre (pour une compétition équitable)
         </p>

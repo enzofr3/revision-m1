@@ -58,7 +58,7 @@ const Pools = (() => {
       type: 'pool_join',
       title: 'Nouveau membre Pool',
       message: `Un collègue a rejoint votre pool "${pool.name}" !`,
-      icon: '👥'
+      icon: 'users'
     });
   }
 
@@ -88,7 +88,7 @@ const Pools = (() => {
         type: 'pool_absence',
         title: 'Absence dans votre pool',
         message: `${user ? user.firstName : 'Un membre'} sera absent le ${date}${reason ? ` (${reason})` : ''}.`,
-        icon: '📅'
+        icon: 'calendar'
       });
     });
   }
@@ -181,9 +181,9 @@ const Pools = (() => {
                     <div style="font-size:var(--font-size-lg);font-weight:var(--font-weight-bold)">${Utils.escapeHtml(pool.name)}</div>
                     <div style="font-size:var(--font-size-sm);opacity:0.9;margin-top:var(--space-1)">${Utils.escapeHtml(pool.description)}</div>
                     <div style="display:flex;gap:var(--space-4);margin-top:var(--space-3);font-size:var(--font-size-xs)">
-                      <span>🕐 ${pool.departureTime}</span>
-                      <span>📅 ${pool.days.map(d => dayNames[d]).join(', ')}</span>
-                      <span>👥 ${pool.members.length} membres</span>
+                      <span>${AppIcons.i('clock', 14)} ${pool.departureTime}</span>
+                      <span>${AppIcons.i('calendar', 14)} ${pool.days.map(d => dayNames[d]).join(', ')}</span>
+                      <span>${AppIcons.i('users', 14)} ${pool.members.length} membres</span>
                     </div>
                   </div>
                   <div style="padding:var(--space-5) var(--space-6)">
@@ -193,7 +193,7 @@ const Pools = (() => {
                         <div style="display:flex;align-items:center;gap:var(--space-2);padding:var(--space-1) var(--space-3);background:var(--color-bg);border-radius:var(--radius-full);font-size:var(--font-size-xs)">
                           <div class="avatar avatar-xs" style="background-color:${Utils.getAvatarColor(m.id)}">${Utils.getInitials(m.firstName, m.lastName)}</div>
                           ${Utils.escapeHtml(m.firstName)}
-                          ${m.vehicle ? '🚗' : ''}
+                          ${m.vehicle ? AppIcons.i('car', 14) : ''}
                         </div>
                       `).join('')}
                     </div>
@@ -210,7 +210,7 @@ const Pools = (() => {
                       </div>
                     ` : ''}
                     <div style="display:flex;gap:var(--space-2)">
-                      <button class="btn btn-outline btn-sm" onclick="Pools.showAbsenceModal('${pool.id}')">📅 Déclarer absence</button>
+                      <button class="btn btn-outline btn-sm" onclick="Pools.showAbsenceModal('${pool.id}')">${AppIcons.i('calendar', 16)} Déclarer absence</button>
                       ${pool.creatorId !== currentUser.id ? `<button class="btn btn-ghost btn-sm" onclick="Pools.leavePool('${pool.id}','${currentUser.id}');App.navigate('/pools')">Quitter</button>` : ''}
                     </div>
                   </div>

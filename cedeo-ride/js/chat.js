@@ -178,7 +178,7 @@ const Chat = (() => {
         fromUserId: userId,
         title: 'Nouveau message',
         message: `${currentUser.firstName} : ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`,
-        icon: '💬'
+        icon: 'message'
       });
 
       input.value = '';

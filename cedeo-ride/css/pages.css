@@ -8,9 +8,8 @@
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
   height: var(--header-height);
 }
 
@@ -109,9 +108,8 @@
   right: 0;
   width: 300px;
   height: 100vh;
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur-lg);
-  border-left: 1px solid var(--glass-border);
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
   z-index: var(--z-modal);
   animation: slideInRight 0.3s ease;
   overflow-y: auto;
@@ -154,9 +152,8 @@
   left: 0;
   right: 0;
   z-index: var(--z-sticky);
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur);
-  border-top: 1px solid var(--glass-border);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
   height: var(--bottom-nav-height);
   display: block;
 }
@@ -1010,8 +1007,9 @@
 }
 
 .chat-bubble.received {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
   border-bottom-left-radius: 4px;
 }
 
@@ -1113,9 +1111,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
   flex-shrink: 0;
   background: var(--color-bg);
+  color: var(--color-text-secondary);
 }
 
 .notification-content {
@@ -1166,8 +1164,9 @@
 .map-sidebar {
   overflow-y: auto;
   padding: var(--space-4);
-  background: var(--glass-bg-strong);
+  background: var(--color-surface);
   border-right: 1px solid var(--color-border);
+  color: var(--color-text);
 }
 
 .map-sidebar-title {
@@ -1574,6 +1573,310 @@
   .eco-stats-row {
     gap: var(--space-4);
   }
+}
+
+/* ===== MAP ENHANCED STYLES ===== */
+.map-sidebar-header {
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-4);
+}
+
+.map-sidebar-header h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.map-filters {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.map-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.map-filter-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.map-filter-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.map-section-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-3);
+}
+
+.map-weather-section {
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.map-weather-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.map-weather-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.map-weather-emoji {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.map-weather-info {
+  flex: 1;
+}
+
+.map-weather-city {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.map-weather-temp {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.map-weather-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+}
+
+.map-agencies-section {
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.map-agency-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.map-agency-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.map-agency-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.map-agency-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.map-agency-detail {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.map-agency-weather {
+  flex-shrink: 0;
+}
+
+.map-departures-section {
+  margin-bottom: var(--space-4);
+}
+
+.map-departure-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.map-departure-item:hover {
+  background: var(--color-primary-bg);
+}
+
+.map-departure-time {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  min-width: 48px;
+}
+
+.map-departure-route {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+}
+
+.map-departure-from,
+.map-departure-to {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.map-departure-driver {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* Map markers custom styling */
+.map-marker-agency {
+  background: none !important;
+  border: none !important;
+}
+
+.map-marker-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.map-marker-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: #fff;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+/* Map popup styling */
+.map-popup {
+  font-family: var(--font-family);
+  padding: var(--space-2);
+}
+
+.map-popup-title {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-2);
+  color: var(--color-text);
+}
+
+.map-popup-stats {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.map-popup-stats span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.map-popup-weather {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.map-popup-link {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin-top: var(--space-1);
+}
+
+.map-popup-link:hover {
+  text-decoration: underline;
+}
+
+/* Leaflet overrides for better UX */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: var(--space-3) var(--space-4) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+.leaflet-popup-tip {
+  box-shadow: none !important;
+}
+
+.leaflet-control-zoom a {
+  border-radius: var(--radius-md) !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 16px !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: var(--shadow-md) !important;
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden;
+}
+
+.map-trip-line {
+  transition: opacity 0.2s;
 }
 
 /* ===== PRINT ===== */

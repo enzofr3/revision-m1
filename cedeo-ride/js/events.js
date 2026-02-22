@@ -114,7 +114,7 @@ const Events = (() => {
         date: futureDate(7),
         endDate: futureDate(14),
         type: 'challenge',
-        icon: '🌍',
+        iconName: 'globe',
         location: 'Toutes les agences',
         organizer: 'Direction Régionale Ouest',
         participants: ['usr_sophie', 'usr_thomas', 'usr_marie', 'usr_pierre'],
@@ -130,7 +130,7 @@ const Events = (() => {
         date: futureDate(10),
         endDate: null,
         type: 'social',
-        icon: '☕',
+        iconName: 'coffee',
         location: 'CEDEO Rennes Route de Lorient',
         organizer: 'Sophie Martin',
         participants: ['usr_sophie', 'usr_maxime', 'usr_camille'],
@@ -146,7 +146,7 @@ const Events = (() => {
         date: futureDate(1),
         endDate: futureDate(30),
         type: 'competition',
-        icon: '🏆',
+        iconName: 'trophy',
         location: 'Toutes les agences',
         organizer: 'CEDEO Ride',
         participants: ['usr_sophie', 'usr_thomas', 'usr_julie', 'usr_nicolas', 'usr_pierre', 'usr_lea'],
@@ -162,7 +162,7 @@ const Events = (() => {
         date: futureDate(21),
         endDate: null,
         type: 'social',
-        icon: '🥾',
+        iconName: 'hiking',
         location: 'Départ : CEDEO Rennes → Saint-Malo',
         organizer: 'Julie Moreau',
         participants: ['usr_julie', 'usr_sophie'],
@@ -178,7 +178,7 @@ const Events = (() => {
         date: futureDate(14),
         endDate: null,
         type: 'challenge',
-        icon: '🚫🚗',
+        iconName: 'no-car',
         location: 'Toutes les agences',
         organizer: 'CEDEO Ride',
         participants: ['usr_thomas', 'usr_marie'],
@@ -225,11 +225,11 @@ const Events = (() => {
         </div>
 
         <!-- Itinéraires favoris -->
-        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">⭐ Mes itinéraires favoris</h2>
+        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">${AppIcons.i('bookmark', 18)} Mes itinéraires favoris</h2>
         <div style="margin-bottom:var(--space-8)">
           ${favorites.length === 0 ? `
             <div class="card" style="text-align:center;padding:var(--space-8)">
-              <div style="font-size:48px;margin-bottom:var(--space-4)">⭐</div>
+              <div style="margin-bottom:var(--space-4)">${AppIcons.i('bookmark', 48, '#6B7280')}</div>
               <div style="font-weight:var(--font-weight-semibold);margin-bottom:var(--space-2)">Aucun itinéraire favori</div>
               <p style="color:var(--color-text-secondary);font-size:var(--font-size-sm);margin-bottom:var(--space-4)">
                 Sauvegardez vos trajets fréquents pour publier plus rapidement.
@@ -251,10 +251,10 @@ const Events = (() => {
                       <button class="btn btn-ghost btn-sm fav-remove-btn" data-id="${fav.id}" title="Supprimer">✕</button>
                     </div>
                     <div class="favorite-meta">
-                      <span>📏 ${distance} km</span>
-                      <span>🕐 ${fav.defaultTime}</span>
-                      <span>💺 ${fav.defaultSeats} places</span>
-                      <span>📊 ${fav.usageCount || 0} utilisation${(fav.usageCount || 0) > 1 ? 's' : ''}</span>
+                      <span>${AppIcons.i('ruler', 14)} ${distance} km</span>
+                      <span>${AppIcons.i('clock', 14)} ${fav.defaultTime}</span>
+                      <span>${AppIcons.i('seat', 14)} ${fav.defaultSeats} places</span>
+                      <span>${AppIcons.i('chart', 14)} ${fav.usageCount || 0} utilisation${(fav.usageCount || 0) > 1 ? 's' : ''}</span>
                     </div>
                     <button class="btn btn-primary btn-sm fav-publish-btn" data-id="${fav.id}" style="width:100%;margin-top:var(--space-3)">
                       Publier ce trajet rapidement
@@ -271,11 +271,11 @@ const Events = (() => {
         </div>
 
         <!-- Événements -->
-        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">📅 Événements à venir</h2>
+        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">${AppIcons.i('calendar', 18)} Événements à venir</h2>
         <div class="events-list">
           ${events.length === 0 ? `
             <div class="card" style="text-align:center;padding:var(--space-8)">
-              <div style="font-size:48px;margin-bottom:var(--space-4)">📅</div>
+              <div style="margin-bottom:var(--space-4)">${AppIcons.i('calendar', 48, '#6B7280')}</div>
               <div style="font-weight:var(--font-weight-semibold)">Aucun événement à venir</div>
             </div>
           ` : events.map(evt => {
@@ -299,26 +299,26 @@ const Events = (() => {
                 </div>
                 <div class="event-card-body">
                   <div class="event-card-header">
-                    <span class="event-icon">${evt.icon}</span>
+                    <span class="event-icon">${AppIcons.i(evt.iconName || 'calendar', 24)}</span>
                     <div>
                       <h3 class="event-card-title">${Utils.escapeHtml(evt.title)}</h3>
                       <div class="event-card-date">
-                        📅 ${Utils.formatDate(evt.date)}
+                        ${AppIcons.i('calendar', 14)} ${Utils.formatDate(evt.date)}
                         ${evt.endDate ? ` → ${Utils.formatDate(evt.endDate)}` : ''}
                       </div>
                     </div>
                   </div>
                   <p class="event-card-desc">${Utils.escapeHtml(evt.description)}</p>
                   <div class="event-card-meta">
-                    <span>📍 ${Utils.escapeHtml(evt.location)}</span>
-                    <span>👥 ${participantCount} participant${participantCount > 1 ? 's' : ''}${evt.maxParticipants ? ` / ${evt.maxParticipants}` : ''}</span>
-                    <span>🏷️ ${evt.tags.map(t => `<span class="event-tag">${t}</span>`).join(' ')}</span>
+                    <span>${AppIcons.i('pin', 14)} ${Utils.escapeHtml(evt.location)}</span>
+                    <span>${AppIcons.i('users', 14)} ${participantCount} participant${participantCount > 1 ? 's' : ''}${evt.maxParticipants ? ` / ${evt.maxParticipants}` : ''}</span>
+                    <span>${AppIcons.i('tag', 14)} ${evt.tags.map(t => `<span class="event-tag">${t}</span>`).join(' ')}</span>
                   </div>
-                  ${evt.reward ? `<div class="event-reward">🎁 ${Utils.escapeHtml(evt.reward)}</div>` : ''}
+                  ${evt.reward ? `<div class="event-reward">${AppIcons.i('gift', 16)} ${Utils.escapeHtml(evt.reward)}</div>` : ''}
                   <div class="event-card-actions">
                     ${isParticipant ? `
                       <button class="btn btn-outline btn-sm event-leave-btn" data-id="${evt.id}">Quitter</button>
-                      <span class="badge badge-success">✓ Inscrit</span>
+                      <span class="badge badge-success">${AppIcons.i('check', 14)} Inscrit</span>
                     ` : `
                       <button class="btn btn-primary btn-sm event-join-btn" data-id="${evt.id}"${evt.maxParticipants && participantCount >= evt.maxParticipants ? ' disabled' : ''}>
                         ${evt.maxParticipants && participantCount >= evt.maxParticipants ? 'Complet' : 'Participer'}
@@ -513,7 +513,7 @@ const Events = (() => {
       const results = Utils.searchAgencies(query);
       if (results.length === 0 || !query) { list.style.display = 'none'; return; }
       list.innerHTML = results.map(a => `
-        <div class="autocomplete-item" data-id="${a.id}" data-name="${a.name}">📍 ${a.name}</div>
+        <div class="autocomplete-item" data-id="${a.id}" data-name="${a.name}">${AppIcons.i('pin', 16)} ${a.name}</div>
       `).join('');
       list.style.display = 'block';
       list.querySelectorAll('.autocomplete-item').forEach(item => {

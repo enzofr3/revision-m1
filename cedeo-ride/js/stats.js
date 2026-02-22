@@ -115,38 +115,38 @@ const Stats = (() => {
         </div>
 
         <!-- Mon impact -->
-        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">📊 Mon impact personnel</h2>
+        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">${AppIcons.i('chart', 18)} Mon impact personnel</h2>
         <div class="stats-grid" style="margin-bottom:var(--space-8)">
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-primary-bg);color:var(--color-primary)">🚗</div>
+            <div class="stat-icon" style="background:var(--color-primary-bg);color:var(--color-primary)">${AppIcons.i('car', 20)}</div>
             <div>
               <div class="stat-value">${myTotalRides}</div>
               <div class="stat-label">Covoiturages</div>
             </div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-warning-bg);color:var(--color-warning)">📏</div>
+            <div class="stat-icon" style="background:var(--color-warning-bg);color:var(--color-warning)">${AppIcons.i('ruler', 20)}</div>
             <div>
               <div class="stat-value">${Math.round(myTotalDistance)} km</div>
               <div class="stat-label">Distance partagée</div>
             </div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-eco-bg);color:var(--color-eco)">🌱</div>
+            <div class="stat-icon" style="background:var(--color-eco-bg);color:var(--color-eco)">${AppIcons.i('seedling', 20)}</div>
             <div>
               <div class="stat-value">${Math.round(myTotalCO2 * 10) / 10} kg</div>
               <div class="stat-label">CO2 économisé</div>
             </div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-success-bg);color:var(--color-success)">🌳</div>
+            <div class="stat-icon" style="background:var(--color-success-bg);color:var(--color-success)">${AppIcons.i('tree-deciduous', 20)}</div>
             <div>
               <div class="stat-value">${myTrees}</div>
               <div class="stat-label">Arbres équivalents</div>
             </div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:#ede9fe;color:#7c3aed">💰</div>
+            <div class="stat-icon" style="background:#ede9fe;color:#7c3aed">${AppIcons.i('money', 20)}</div>
             <div>
               <div class="stat-value">${Math.round(myMoneySaved)}€</div>
               <div class="stat-label">Économie estimée</div>
@@ -155,31 +155,31 @@ const Stats = (() => {
         </div>
 
         <!-- Impact collectif -->
-        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">🌍 Impact collectif — Région Ouest</h2>
+        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">${AppIcons.i('seedling', 20)} Impact collectif — Région Ouest</h2>
         <div class="stats-grid" style="margin-bottom:var(--space-8)">
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-primary-bg);color:var(--color-primary)">🚗</div>
+            <div class="stat-icon" style="background:var(--color-primary-bg);color:var(--color-primary)">${AppIcons.i('car', 22)}</div>
             <div>
               <div class="stat-value">${allBookings.length}</div>
               <div class="stat-label">Covoiturages total</div>
             </div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-eco-bg);color:var(--color-eco)">🌱</div>
+            <div class="stat-icon" style="background:var(--color-eco-bg);color:var(--color-eco)">${AppIcons.i('leaf', 22)}</div>
             <div>
               <div class="stat-value">${Math.round(totalCO2)} kg</div>
               <div class="stat-label">CO2 économisé total</div>
             </div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-warning-bg);color:var(--color-warning)">📏</div>
+            <div class="stat-icon" style="background:var(--color-warning-bg);color:var(--color-warning)">${AppIcons.i('map', 22)}</div>
             <div>
               <div class="stat-value">${Math.round(totalDistance)} km</div>
               <div class="stat-label">Km partagés total</div>
             </div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-success-bg);color:var(--color-success)">👥</div>
+            <div class="stat-icon" style="background:var(--color-success-bg);color:var(--color-success)">${AppIcons.i('users', 22)}</div>
             <div>
               <div class="stat-value">${allUsers.length}</div>
               <div class="stat-label">Membres actifs</div>
@@ -244,7 +244,7 @@ const Stats = (() => {
         </div>
 
         <!-- Leaderboard -->
-        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">🏆 Classement des covoitureurs</h2>
+        <h2 class="dashboard-section-title" style="margin-bottom:var(--space-4)">${AppIcons.i('trophy', 20)} Classement des covoitureurs</h2>
         <div class="card" style="padding:var(--space-6);margin-bottom:var(--space-8)">
           ${topUsers.length === 0 ? '<p style="color:var(--color-text-secondary);text-align:center">Aucun covoiturage réalisé</p>' : `
             <div class="leaderboard-list">
@@ -378,25 +378,25 @@ const Stats = (() => {
         <!-- Stats rapides -->
         <div class="stats-grid" style="margin-bottom:var(--space-6)">
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-primary-bg);color:var(--color-primary)">👥</div>
+            <div class="stat-icon" style="background:var(--color-primary-bg);color:var(--color-primary)">${AppIcons.i('users', 22)}</div>
             <div><div class="stat-value">${users.length}</div><div class="stat-label">Utilisateurs</div></div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-success-bg);color:var(--color-success)">🚗</div>
+            <div class="stat-icon" style="background:var(--color-success-bg);color:var(--color-success)">${AppIcons.i('car', 22)}</div>
             <div><div class="stat-value">${trips.length}</div><div class="stat-label">Trajets</div></div>
           </div>
           <div class="card stat-card">
-            <div class="stat-icon" style="background:var(--color-warning-bg);color:var(--color-warning)">🎫</div>
+            <div class="stat-icon" style="background:var(--color-warning-bg);color:var(--color-warning)">${AppIcons.i('clipboard', 22)}</div>
             <div><div class="stat-value">${bookings.length}</div><div class="stat-label">Réservations</div></div>
           </div>
         </div>
 
         <!-- Export -->
         <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-6)">
-          <button class="btn btn-outline btn-sm" id="export-users">📥 Export utilisateurs (CSV)</button>
-          <button class="btn btn-outline btn-sm" id="export-trips">📥 Export trajets (CSV)</button>
-          <button class="btn btn-outline btn-sm" id="export-bookings">📥 Export réservations (CSV)</button>
-          <button class="btn btn-accent btn-sm" id="reset-data">🗑 Réinitialiser les données</button>
+          <button class="btn btn-outline btn-sm" id="export-users">${AppIcons.i('download', 16)} Export utilisateurs (CSV)</button>
+          <button class="btn btn-outline btn-sm" id="export-trips">${AppIcons.i('download', 16)} Export trajets (CSV)</button>
+          <button class="btn btn-outline btn-sm" id="export-bookings">${AppIcons.i('download', 16)} Export réservations (CSV)</button>
+          <button class="btn btn-accent btn-sm" id="reset-data">${AppIcons.i('trash', 16)} Réinitialiser les données</button>
         </div>
 
         <!-- Tabs -->

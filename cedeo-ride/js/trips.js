@@ -8,18 +8,18 @@ const Trips = (() => {
   /**
    * Page d'accueil avec hero et recherche
    */
-  // Images Unsplash pour les destinations
+  // Images Unsplash pour les destinations (photos réelles vérifiées par ville)
   const CITY_IMAGES = {
-    'rennes-lorient': 'https://images.unsplash.com/photo-1560983073-c29bff7438ef?w=400&q=80',
-    'rennes-stgregoire': 'https://images.unsplash.com/photo-1560983073-c29bff7438ef?w=400&q=80',
-    'cesson-bray': 'https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=400&q=80',
-    'cesson-chene': 'https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=400&q=80',
-    'chateaubourg': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80',
-    'derval': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80',
-    'saint-malo': 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80',
-    'dinan': 'https://images.unsplash.com/photo-1590099033615-be195f8d575c?w=400&q=80',
-    'fougeres': 'https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?w=400&q=80',
-    'la-roche': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80'
+    'rennes-lorient': 'https://images.unsplash.com/photo-1655828785779-8894e87d0589?w=400&q=80',     // Place de la Mairie, Rennes
+    'rennes-stgregoire': 'https://images.unsplash.com/photo-1722691084924-2ab26ccba69e?w=400&q=80',  // Vilaine river, Rennes
+    'cesson-bray': 'https://images.unsplash.com/photo-1655828785779-8894e87d0589?w=400&q=80',        // Rennes area
+    'cesson-chene': 'https://images.unsplash.com/photo-1655828785779-8894e87d0589?w=400&q=80',       // Rennes area
+    'chateaubourg': 'https://images.unsplash.com/photo-1722691084924-2ab26ccba69e?w=400&q=80',       // Bretagne countryside
+    'derval': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80',              // Campagne française
+    'saint-malo': 'https://images.unsplash.com/photo-1607888161703-11019e612e3d?w=400&q=80',          // Remparts de Saint-Malo
+    'dinan': 'https://images.unsplash.com/photo-1673552887879-3d5c20da38a3?w=400&q=80',              // Vieille ville de Dinan
+    'fougeres': 'https://images.unsplash.com/photo-1753295849219-5f36a5b7e6a7?w=400&q=80',           // Château de Fougères
+    'la-roche': 'https://images.unsplash.com/photo-1654797589436-a4ffaa8384b6?w=400&q=80'            // Bretagne vue aérienne
   };
 
   function renderHomePage() {
@@ -90,15 +90,15 @@ const Trips = (() => {
 
             <div class="hero-trust">
               <div class="hero-trust-item">
-                <span style="font-size:20px">👥</span>
+                <span>${AppIcons.i('users', 20)}</span>
                 <span><strong>${CedeoStore.getUsers().length}</strong> collaborateurs</span>
               </div>
               <div class="hero-trust-item">
-                <span style="font-size:20px">🏢</span>
+                <span>${AppIcons.i('building', 20)}</span>
                 <span><strong>10</strong> agences</span>
               </div>
               <div class="hero-trust-item">
-                <span style="font-size:20px">🌱</span>
+                <span>${AppIcons.i('leaf', 20)}</span>
                 <span><strong>${Math.round(totalCO2)} kg</strong> CO2 économisé</span>
               </div>
             </div>
@@ -175,7 +175,7 @@ const Trips = (() => {
           <!-- Challenge card -->
           <div class="card card-clickable" onclick="App.navigate('/challenges')" style="padding:var(--space-6);border-left:4px solid #f59e0b">
             <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
-              <span style="font-size:28px">🏆</span>
+              <span style="color:#f59e0b">${AppIcons.i('trophy', 28, '#f59e0b')}</span>
               <div>
                 <div style="font-weight:var(--font-weight-bold)">Challenges du mois</div>
                 <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Relevez les défis et gagnez des badges</div>
@@ -186,7 +186,7 @@ const Trips = (() => {
           <!-- Carte interactive -->
           <div class="card card-clickable" onclick="App.navigate('/map')" style="padding:var(--space-6);border-left:4px solid #003DA5">
             <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
-              <span style="font-size:28px">🗺️</span>
+              <span>${AppIcons.i('map', 28, '#003DA5')}</span>
               <div>
                 <div style="font-weight:var(--font-weight-bold)">Carte Interactive</div>
                 <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Explorez les agences et trajets sur la carte</div>
@@ -197,7 +197,7 @@ const Trips = (() => {
           <!-- Événements -->
           <div class="card card-clickable" onclick="App.navigate('/events')" style="padding:var(--space-6);border-left:4px solid #16a34a">
             <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
-              <span style="font-size:28px">📅</span>
+              <span>${AppIcons.i('calendar', 28, '#16a34a')}</span>
               <div>
                 <div style="font-weight:var(--font-weight-bold)">Événements Région Ouest</div>
                 <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Challenges collectifs et rencontres</div>
@@ -296,7 +296,7 @@ const Trips = (() => {
 
     return `
       <div class="card card-clickable trip-card ${isMatch ? 'match-card' : ''}" onclick="App.navigate('/trip/${trip.id}')">
-        ${isMatch ? '<div class="match-badge">✨ Match</div>' : ''}
+        ${isMatch ? '<div class="match-badge">' + AppIcons.i('sparkle', 14, '#f59e0b') + ' Match</div>' : ''}
         <div class="trip-card-header">
           <div class="avatar avatar-md" style="background-color:${Utils.getAvatarColor(driver.id)}">${Utils.getInitials(driver.firstName, driver.lastName)}</div>
           <div class="trip-card-driver-info">
@@ -331,9 +331,9 @@ const Trips = (() => {
 
         <div class="trip-card-meta">
           <div class="trip-card-info">
-            ${trip.distanceKm ? `<div class="trip-card-info-item">📏 ${trip.distanceKm} km</div>` : ''}
-            <div class="trip-card-info-item">⏱ ${durationMin} min</div>
-            ${trip.distanceKm ? `<div class="trip-card-info-item">🌱 ${Utils.calculateCO2Saved(trip.distanceKm, 1)} kg CO2</div>` : ''}
+            ${trip.distanceKm ? `<div class="trip-card-info-item">${AppIcons.i('ruler', 14)} ${trip.distanceKm} km</div>` : ''}
+            <div class="trip-card-info-item">${AppIcons.i('clock', 14)} ${durationMin} min</div>
+            ${trip.distanceKm ? `<div class="trip-card-info-item">${AppIcons.i('leaf', 14, '#22c55e')} ${Utils.calculateCO2Saved(trip.distanceKm, 1)} kg CO2</div>` : ''}
           </div>
           ${driver.preferences ? Utils.renderPrefIcons(driver.preferences) : ''}
         </div>
@@ -434,7 +434,7 @@ const Trips = (() => {
 
               ${trip.recurring ? `
                 <div style="margin-top:var(--space-3)">
-                  <span class="badge badge-primary">🔄 Trajet récurrent : ${trip.recurringDays?.map(d => ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][d]).join(', ') || 'Tous les jours'}</span>
+                  <span class="badge badge-primary">${AppIcons.i('refresh', 14)} Trajet récurrent : ${trip.recurringDays?.map(d => ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][d]).join(', ') || 'Tous les jours'}</span>
                 </div>
               ` : ''}
 
@@ -442,12 +442,12 @@ const Trips = (() => {
                 <div class="divider"></div>
                 <div style="display:flex;gap:var(--space-4);align-items:center">
                   <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Météo départ</div>
-                  <span style="font-size:18px">${MapModule.getWeatherEmoji(trip.fromId)}</span>
+                  <span>${MapModule.getWeatherIcon(trip.fromId)}</span>
                   <span style="font-size:var(--font-size-sm);font-weight:var(--font-weight-medium)">${MapModule.getWeatherTemp(trip.fromId)}°C — ${MapModule.getWeatherDesc(trip.fromId)}</span>
                   ${trip.toId ? `
                     <span style="color:var(--color-text-light);margin:0 var(--space-2)">|</span>
                     <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Arrivée</div>
-                    <span style="font-size:18px">${MapModule.getWeatherEmoji(trip.toId)}</span>
+                    <span>${MapModule.getWeatherIcon(trip.toId)}</span>
                     <span style="font-size:var(--font-size-sm);font-weight:var(--font-weight-medium)">${MapModule.getWeatherTemp(trip.toId)}°C</span>
                   ` : ''}
                 </div>
@@ -513,7 +513,7 @@ const Trips = (() => {
             ${currentUser && trip.fromId && trip.toId ? `
               <div class="card" style="margin-bottom:var(--space-6)">
                 <button class="btn btn-outline btn-sm" id="save-fav-btn" style="width:100%">
-                  ⭐ Sauvegarder cet itinéraire
+                  ${AppIcons.i('bookmark', 16)} Sauvegarder cet itinéraire
                 </button>
               </div>
             ` : ''}
@@ -580,7 +580,7 @@ const Trips = (() => {
           defaultSeats: trip.seats
         });
         window.App.showToast('Itinéraire sauvegardé dans vos favoris !', 'success');
-        document.getElementById('save-fav-btn').textContent = '✓ Sauvegardé';
+        document.getElementById('save-fav-btn').innerHTML = AppIcons.i('check', 16) + ' Sauvegardé';
         document.getElementById('save-fav-btn').disabled = true;
       }
     });
@@ -609,7 +609,7 @@ const Trips = (() => {
       tripId: trip.id,
       title: 'Nouvelle réservation',
       message: `${currentUser.firstName} a réservé ${seats} place${seats > 1 ? 's' : ''} pour votre trajet ${trip.fromName} → ${trip.toName}.`,
-      icon: '🎫'
+      icon: 'ticket'
     });
 
     // Notification au passager
@@ -619,7 +619,7 @@ const Trips = (() => {
       tripId: trip.id,
       title: 'Réservation confirmée',
       message: `Votre place est réservée pour le trajet ${trip.fromName} → ${trip.toName} le ${Utils.formatDateShort(trip.departureTime)}.`,
-      icon: '✅'
+      icon: 'check-circle'
     });
 
     window.App.showToast('Réservation confirmée !', 'success');
@@ -645,7 +645,7 @@ const Trips = (() => {
         tripId: trip.id,
         title: 'Trajet annulé',
         message: `Le trajet ${trip.fromName} → ${trip.toName} du ${Utils.formatDateShort(trip.departureTime)} a été annulé par le conducteur.`,
-        icon: '❌'
+        icon: 'x-circle'
       });
     });
 
@@ -671,7 +671,7 @@ const Trips = (() => {
         tripId: trip.id,
         title: 'Réservation annulée',
         message: `${currentUser.firstName} a annulé sa réservation pour ${trip.fromName} → ${trip.toName}.`,
-        icon: '↩️'
+        icon: 'undo'
       });
     }
 
@@ -700,7 +700,7 @@ const Trips = (() => {
 
         <form id="publish-form" novalidate>
           <div class="card" style="margin-bottom:var(--space-4)">
-            <div class="publish-section-title">📍 Itinéraire</div>
+            <div class="publish-section-title">${AppIcons.i('pin', 18)} Itinéraire</div>
             <div style="display:flex;flex-direction:column;gap:var(--space-4)">
               <div class="form-group autocomplete-wrapper">
                 <label class="form-label">Lieu de départ *</label>
@@ -718,7 +718,7 @@ const Trips = (() => {
           </div>
 
           <div class="card" style="margin-bottom:var(--space-4)">
-            <div class="publish-section-title">🕐 Date et horaire</div>
+            <div class="publish-section-title">${AppIcons.i('clock', 18)} Date et horaire</div>
             <div style="display:flex;flex-direction:column;gap:var(--space-4)">
               <div class="form-row">
                 <div class="form-group">
@@ -751,7 +751,7 @@ const Trips = (() => {
           </div>
 
           <div class="card" style="margin-bottom:var(--space-4)">
-            <div class="publish-section-title">🚗 Détails</div>
+            <div class="publish-section-title">${AppIcons.i('car', 18)} Détails</div>
             <div style="display:flex;flex-direction:column;gap:var(--space-4)">
               <div class="form-row">
                 <div class="form-group">
@@ -907,7 +907,7 @@ const Trips = (() => {
           tripId: trip.id,
           title: 'Trajet compatible trouvé !',
           message: `Un nouveau trajet ${trip.fromName} → ${trip.toName} correspond à vos recherches.`,
-          icon: '✨'
+          icon: 'sparkle'
         });
       });
 
@@ -918,7 +918,7 @@ const Trips = (() => {
         tripId: trip.id,
         title: `${matches.length} match${matches.length > 1 ? 's' : ''} trouvé${matches.length > 1 ? 's' : ''} !`,
         message: `Des collègues cherchent un trajet compatible avec le vôtre.`,
-        icon: '✨'
+        icon: 'sparkle'
       });
     }
 
@@ -1069,7 +1069,7 @@ const Trips = (() => {
 
         ${matches.length > 0 ? `
           <div style="margin-bottom:var(--space-6)">
-            <h2 class="dashboard-section-title">🎯 Matchs suggérés</h2>
+            <h2 class="dashboard-section-title">${AppIcons.i('target', 18)} Matchs suggérés</h2>
             <div class="search-results-list">
               ${matches.slice(0, 2).map(m => renderTripCard(m.trip, true)).join('')}
             </div>
@@ -1081,7 +1081,7 @@ const Trips = (() => {
             <!-- Prochains trajets conducteur -->
             <div style="margin-bottom:var(--space-6)">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
-                <h2 class="dashboard-section-title" style="margin:0">🚗 Mes trajets (conducteur)</h2>
+                <h2 class="dashboard-section-title" style="margin:0">${AppIcons.i('car', 18)} Mes trajets (conducteur)</h2>
                 <a href="#/publish" class="btn btn-primary btn-sm">+ Nouveau</a>
               </div>
               ${upcomingDriverTrips.length === 0 ? `
@@ -1094,7 +1094,7 @@ const Trips = (() => {
 
             <!-- Prochains trajets passager -->
             <div style="margin-bottom:var(--space-6)">
-              <h2 class="dashboard-section-title">🎫 Mes réservations (passager)</h2>
+              <h2 class="dashboard-section-title">${AppIcons.i('ticket', 18)} Mes réservations (passager)</h2>
               ${upcomingBookings.length === 0 ? `
                 <div class="card card-flat" style="text-align:center;padding:var(--space-6)">
                   <p style="color:var(--color-text-secondary)">Aucune réservation à venir</p>
@@ -1107,7 +1107,7 @@ const Trips = (() => {
           <div>
             <!-- Historique -->
             <div>
-              <h2 class="dashboard-section-title">📋 Historique</h2>
+              <h2 class="dashboard-section-title">${AppIcons.i('clipboard', 18)} Historique</h2>
               <div class="card card-flat" style="padding:0;max-height:400px;overflow-y:auto">
                 ${(pastTrips.length + pastBookings.length) === 0 ? `
                   <div style="text-align:center;padding:var(--space-6);color:var(--color-text-secondary)">Aucun trajet passé</div>
@@ -1115,7 +1115,7 @@ const Trips = (() => {
                   ${pastTrips.slice(0, 5).map(t => `
                     <div class="notification-item" onclick="App.navigate('/trip/${t.id}')" style="cursor:pointer">
                       <div class="notification-icon" style="background:${t.status === 'cancelled' ? 'var(--color-error-bg)' : 'var(--color-primary-bg)'}">
-                        ${t.status === 'cancelled' ? '❌' : '🚗'}
+                        ${t.status === 'cancelled' ? AppIcons.i('x-circle', 18) : AppIcons.i('car', 18)}
                       </div>
                       <div class="notification-content">
                         <div class="notification-text">${Utils.escapeHtml(t.fromName)} → ${Utils.escapeHtml(t.toName)}</div>
@@ -1126,7 +1126,7 @@ const Trips = (() => {
                   ${pastBookings.slice(0, 5).map(b => `
                     <div class="notification-item" onclick="App.navigate('/trip/${b.trip.id}')" style="cursor:pointer">
                       <div class="notification-icon" style="background:${b.status === 'cancelled' ? 'var(--color-error-bg)' : 'var(--color-success-bg)'}">
-                        ${b.status === 'cancelled' ? '↩️' : '🎫'}
+                        ${b.status === 'cancelled' ? AppIcons.i('undo', 18) : AppIcons.i('ticket', 18)}
                       </div>
                       <div class="notification-content">
                         <div class="notification-text">${Utils.escapeHtml(b.trip.fromName)} → ${Utils.escapeHtml(b.trip.toName)}</div>
@@ -1166,7 +1166,7 @@ const Trips = (() => {
 
       list.innerHTML = results.map(a => `
         <div class="autocomplete-item" data-id="${a.id}" data-name="${a.name}">
-          <span>📍</span> ${a.name}
+          ${AppIcons.i('pin', 16)} ${a.name}
         </div>
       `).join('');
       list.style.display = 'block';

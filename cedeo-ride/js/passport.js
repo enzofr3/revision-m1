@@ -7,11 +7,11 @@ const GreenPassport = (() => {
   const STORAGE_KEY = 'cedeoride_passport';
 
   const TREE_STAGES = [
-    { minCO2: 0, name: 'Graine', emoji: '🌱', color: '#a3d977', scale: 0.3 },
-    { minCO2: 5, name: 'Pousse', emoji: '🌿', color: '#7cc653', scale: 0.5 },
-    { minCO2: 15, name: 'Jeune arbre', emoji: '🌳', color: '#4caf50', scale: 0.7 },
-    { minCO2: 30, name: 'Arbre mature', emoji: '🌲', color: '#2e7d32', scale: 0.85 },
-    { minCO2: 50, name: 'Forêt', emoji: '🏔️', color: '#1b5e20', scale: 1.0 }
+    { minCO2: 0, name: 'Graine', iconName: 'seedling', color: '#a3d977', scale: 0.3 },
+    { minCO2: 5, name: 'Pousse', iconName: 'sprout', color: '#7cc653', scale: 0.5 },
+    { minCO2: 15, name: 'Jeune arbre', iconName: 'tree-deciduous', color: '#4caf50', scale: 0.7 },
+    { minCO2: 30, name: 'Arbre mature', iconName: 'tree-pine', color: '#2e7d32', scale: 0.85 },
+    { minCO2: 50, name: 'Forêt', iconName: 'forest', color: '#1b5e20', scale: 1.0 }
   ];
 
   function getUserPassportData(userId) {
@@ -132,7 +132,7 @@ const GreenPassport = (() => {
           <div style="background:linear-gradient(to bottom, #e8f5e9 0%, #c8e6c9 100%);padding:var(--space-8) var(--space-4) var(--space-6)">
             ${renderTreeSVG(data.stage)}
             <div style="margin-top:var(--space-4)">
-              <div style="font-size:var(--font-size-xl);font-weight:var(--font-weight-bold);color:#1b5e20">${data.stage.emoji} ${data.stage.name}</div>
+              <div style="font-size:var(--font-size-xl);font-weight:var(--font-weight-bold);color:#1b5e20;display:flex;align-items:center;justify-content:center;gap:var(--space-2)">${AppIcons.i(data.stage.iconName, 24, data.stage.color)} ${data.stage.name}</div>
               ${data.nextStage ? `
                 <div style="max-width:300px;margin:var(--space-3) auto 0">
                   <div style="display:flex;justify-content:space-between;font-size:var(--font-size-xs);margin-bottom:var(--space-1)">
@@ -177,7 +177,7 @@ const GreenPassport = (() => {
               const isUnlocked = data.totalCO2 >= s.minCO2;
               return `
                 <div style="display:flex;align-items:center;gap:var(--space-3);opacity:${isUnlocked ? '1' : '0.4'}">
-                  <div style="width:40px;height:40px;border-radius:var(--radius-full);background:${isUnlocked ? s.color + '20' : 'var(--color-bg)'};display:flex;align-items:center;justify-content:center;font-size:20px;${isCurrent ? 'box-shadow:0 0 0 3px ' + s.color + '40' : ''}">${s.emoji}</div>
+                  <div style="width:40px;height:40px;border-radius:var(--radius-full);background:${isUnlocked ? s.color + '20' : 'var(--color-bg)'};display:flex;align-items:center;justify-content:center;${isCurrent ? 'box-shadow:0 0 0 3px ' + s.color + '40' : ''}">${AppIcons.i(s.iconName, 20, isUnlocked ? s.color : '#9ca3af')}</div>
                   <div style="flex:1">
                     <div style="font-weight:${isCurrent ? 'var(--font-weight-bold)' : 'var(--font-weight-medium)'};font-size:var(--font-size-sm)">${s.name}</div>
                     <div style="font-size:var(--font-size-xs);color:var(--color-text-light)">${s.minCO2} kg CO2 minimum</div>
@@ -197,7 +197,7 @@ const GreenPassport = (() => {
             ${data.totalCO2} kg CO2 économisé grâce à ${data.totalTrips} covoiturages CEDEO Ride
           </p>
           <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3)" onclick="GreenPassport.sharePassport()">
-            📤 Partager mon passeport
+            ${AppIcons.i('share', 16, '#fff')} Partager mon passeport
           </button>
         </div>
       </div>
@@ -209,7 +209,7 @@ const GreenPassport = (() => {
     if (!currentUser) return;
     const data = getUserPassportData(currentUser.id);
 
-    const shareText = `🌱 Mon Passeport Vert CEDEO Ride\n${data.stage.emoji} Niveau : ${data.stage.name}\n🌍 ${data.totalCO2} kg CO2 économisé\n🚗 ${data.totalKm} km partagés\n🌳 ${data.treesEquiv} arbres équivalents`;
+    const shareText = `Mon Passeport Vert CEDEO Ride\nNiveau : ${data.stage.name}\n${data.totalCO2} kg CO2 economise\n${data.totalKm} km partages\n${data.treesEquiv} arbres equivalents`;
 
     if (navigator.share) {
       navigator.share({ title: 'Mon Passeport Vert CEDEO Ride', text: shareText }).catch(() => {});

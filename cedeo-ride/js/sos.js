@@ -56,7 +56,7 @@ const SOS = (() => {
       type: 'sos_response',
       title: 'Réponse SOS !',
       message: `${responder ? responder.firstName : 'Un collègue'} peut vous dépanner${message ? ': ' + message : ''} !`,
-      icon: '🦸'
+      icon: 'hero'
     });
 
     // Give "Sauveteur" achievement
@@ -65,7 +65,7 @@ const SOS = (() => {
       type: 'sos_hero',
       title: 'Badge Sauveteur !',
       message: 'Merci d\'avoir répondu à un SOS. Vous avez le badge Sauveteur !',
-      icon: '🦸'
+      icon: 'hero'
     });
   }
 
@@ -103,7 +103,7 @@ const SOS = (() => {
         type: 'sos_alert',
         title: 'SOS Trajet !',
         message: `${sender ? sender.firstName : 'Un collègue'}${agency ? ' (' + agency.shortName + ')' : ''} a besoin d'un trajet d'urgence${alert.destination ? ' vers ' + alert.destination : ''} !`,
-        icon: '🚨',
+        icon: 'siren',
         sosAlertId: alert.id
       });
     });
@@ -122,7 +122,7 @@ const SOS = (() => {
     backdrop.innerHTML = `
       <div class="modal" style="border-top:4px solid var(--color-error)">
         <div class="modal-header">
-          <div class="modal-title" style="color:var(--color-error)">🚨 SOS Trajet</div>
+          <div class="modal-title" style="color:var(--color-error)">${AppIcons.i('siren', 20, 'var(--color-error)')} SOS Trajet</div>
           <button class="modal-close" id="close-sos-modal">&times;</button>
         </div>
         <div class="modal-body">
@@ -151,7 +151,7 @@ const SOS = (() => {
             <textarea class="form-textarea" id="sos-message" placeholder="Donnez plus de détails..." rows="2"></textarea>
           </div>
           <button class="btn btn-accent btn-lg" id="send-sos-btn" style="width:100%">
-            🚨 Envoyer l'alerte SOS
+            ${AppIcons.i('siren', 18)} Envoyer l'alerte SOS
           </button>
         </div>
       </div>

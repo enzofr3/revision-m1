@@ -73,7 +73,7 @@ const LastMile = (() => {
           <div class="card" style="margin-bottom:var(--space-6)">
             <div style="display:flex;align-items:center;gap:var(--space-4)">
               <div style="width:48px;height:48px;border-radius:var(--radius-full);background:var(--color-primary-bg);display:flex;align-items:center;justify-content:center;font-size:24px">
-                ${nearestStation.type === 'train' ? '🚆' : '🚌'}
+                ${nearestStation.type === 'train' ? AppIcons.i('train', 24, 'var(--color-primary)') : AppIcons.i('bus', 24, 'var(--color-primary)')}
               </div>
               <div style="flex:1">
                 <div style="font-weight:var(--font-weight-semibold)">${nearestStation.name}</div>
@@ -92,7 +92,7 @@ const LastMile = (() => {
                 <label class="form-label">Gare / Station de départ *</label>
                 <select class="form-select" id="lm-station" required>
                   <option value="">Sélectionnez...</option>
-                  ${STATIONS.map(s => `<option value="${s.id}">${s.type === 'train' ? '🚆' : '🚌'} ${s.name}</option>`).join('')}
+                  ${STATIONS.map(s => `<option value="${s.id}">${s.name} (${s.type === 'train' ? 'Train' : 'Bus'})</option>`).join('')}
                 </select>
               </div>
               <div class="form-group">
@@ -136,7 +136,7 @@ const LastMile = (() => {
             return `
               <div class="card card-compact">
                 <div style="display:flex;align-items:center;gap:var(--space-3)">
-                  <span style="font-size:24px">${s.type === 'train' ? '🚆' : '🚌'}</span>
+                  <span>${s.type === 'train' ? AppIcons.i('train', 24, 'var(--color-primary)') : AppIcons.i('bus', 24, '#16a34a')}</span>
                   <div>
                     <div style="font-weight:var(--font-weight-medium);font-size:var(--font-size-sm)">${s.name}</div>
                     <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">
