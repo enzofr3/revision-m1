@@ -46,8 +46,8 @@ const Chat = (() => {
                   <div class="chat-contact-name">${Utils.escapeHtml(contact.firstName)} ${Utils.escapeHtml(contact.lastName)}</div>
                   <div class="chat-contact-preview">${Utils.escapeHtml(conv.lastMessage.text || '')}</div>
                 </div>
-                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--space-1)">
-                  <div class="chat-contact-time">${Utils.timeAgo(conv.lastMessage.timestamp)}</div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--space-1);flex-shrink:0">
+                  <div class="chat-contact-time" style="white-space:nowrap">${Utils.timeAgo(conv.lastMessage.timestamp)}</div>
                   ${conv.unreadCount > 0 ? `<span class="badge-count chat-contact-unread">${conv.unreadCount}</span>` : ''}
                 </div>
               </div>

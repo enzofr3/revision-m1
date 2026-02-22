@@ -392,7 +392,7 @@ const Stats = (() => {
         </div>
 
         <!-- Export -->
-        <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-6)">
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-6)">
           <button class="btn btn-outline btn-sm" id="export-users">📥 Export utilisateurs (CSV)</button>
           <button class="btn btn-outline btn-sm" id="export-trips">📥 Export trajets (CSV)</button>
           <button class="btn btn-outline btn-sm" id="export-bookings">📥 Export réservations (CSV)</button>
