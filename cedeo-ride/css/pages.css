@@ -179,7 +179,6 @@
   padding: var(--space-12) 0 var(--space-16);
   text-align: center;
   position: relative;
-  overflow: hidden;
 }
 
 .hero::before {
@@ -191,6 +190,7 @@
   height: 500px;
   border-radius: 50%;
   background: rgba(255,255,255,0.05);
+  pointer-events: none;
 }
 
 .hero::after {
@@ -202,6 +202,7 @@
   height: 300px;
   border-radius: 50%;
   background: rgba(255,255,255,0.03);
+  pointer-events: none;
 }
 
 .hero-content {
@@ -271,7 +272,7 @@
   .search-bar .form-input:focus {
     box-shadow: none;
   }
-  .search-bar .form-input:last-of-type {
+  .search-bar > .form-input:last-of-type {
     border-right: none;
   }
   .search-bar .btn {
