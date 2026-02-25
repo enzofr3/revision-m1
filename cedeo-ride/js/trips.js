@@ -8,6 +8,20 @@ const Trips = (() => {
   /**
    * Page d'accueil avec hero et recherche
    */
+  // Images Unsplash pour les destinations (photos réelles vérifiées par ville)
+  const CITY_IMAGES = {
+    'rennes-lorient': 'https://images.unsplash.com/photo-1655828785779-8894e87d0589?w=400&q=80',     // Place de la Mairie, Rennes
+    'rennes-stgregoire': 'https://images.unsplash.com/photo-1722691084924-2ab26ccba69e?w=400&q=80',  // Vilaine river, Rennes
+    'cesson-bray': 'https://images.unsplash.com/photo-1655828785779-8894e87d0589?w=400&q=80',        // Rennes area
+    'cesson-chene': 'https://images.unsplash.com/photo-1655828785779-8894e87d0589?w=400&q=80',       // Rennes area
+    'chateaubourg': 'https://images.unsplash.com/photo-1722691084924-2ab26ccba69e?w=400&q=80',       // Bretagne countryside
+    'derval': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80',              // Campagne française
+    'saint-malo': 'https://images.unsplash.com/photo-1607888161703-11019e612e3d?w=400&q=80',          // Remparts de Saint-Malo
+    'dinan': 'https://images.unsplash.com/photo-1673552887879-3d5c20da38a3?w=400&q=80',              // Vieille ville de Dinan
+    'fougeres': 'https://images.unsplash.com/photo-1753295849219-5f36a5b7e6a7?w=400&q=80',           // Château de Fougères
+    'la-roche': 'https://images.unsplash.com/photo-1654797589436-a4ffaa8384b6?w=400&q=80'            // Bretagne vue aérienne
+  };
+
   function renderHomePage() {
     const app = document.getElementById('app-content');
     const currentUser = CedeoStore.getCurrentUser();
@@ -21,80 +35,10 @@ const Trips = (() => {
       matches = Matching.findMatchesForUser(currentUser.id);
     }
 
-    app.innerHTML = `
-      <div class="hero">
-        <div class="hero-content">
-          <h1 class="hero-title">Covoiturez entre collègues</h1>
-          <p class="hero-subtitle">Partagez vos trajets professionnels en région Ouest CEDEO. Économisez du temps, de l'argent et du CO2.</p>
-          <div class="search-bar" id="home-search-bar">
-            <div class="autocomplete-wrapper" style="flex:1">
-              <input class="form-input" type="text" id="search-from" placeholder="D'où partez-vous ?" autocomplete="off">
-              <div class="autocomplete-list" id="ac-from" style="display:none"></div>
-            </div>
-            <div class="autocomplete-wrapper" style="flex:1">
-              <input class="form-input" type="text" id="search-to" placeholder="Où allez-vous ?" autocomplete="off">
-              <div class="autocomplete-list" id="ac-to" style="display:none"></div>
-            </div>
-            <input class="form-input" type="date" id="search-date" style="flex:0.7" min="${new Date().toISOString().split('T')[0]}">
-            <button class="btn btn-primary btn-lg" id="search-btn">Rechercher</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="container">
-        ${matches.length > 0 ? `
-          <div style="padding:var(--space-6) 0">
-            <h2 class="dashboard-section-title">🎯 Trajets compatibles pour vous</h2>
-            <div class="search-results-list">
-              ${matches.slice(0, 3).map(m => renderTripCard(m.trip, true)).join('')}
-            </div>
-          </div>
-        ` : ''}
-
-        <div style="padding:var(--space-6) 0">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
-            <h2 class="dashboard-section-title" style="margin-bottom:0">Prochains trajets disponibles</h2>
-            ${currentUser ? '<a href="#/publish" class="btn btn-primary btn-sm">+ Publier un trajet</a>' : ''}
-          </div>
-          ${upcomingTrips.length === 0 ? `
-            <div class="card">
-              <div class="empty-state">
-                ${window.AppIcons.emptyTrips()}
-                <div class="empty-state-title">Aucun trajet disponible</div>
-                <div class="empty-state-text">Soyez le premier à publier un trajet !</div>
-                ${currentUser ? '<a href="#/publish" class="btn btn-primary">Publier un trajet</a>' : '<a href="#/login" class="btn btn-primary">Se connecter</a>'}
-              </div>
-            </div>
-          ` : `
-            <div class="search-results-list">
-              ${upcomingTrips.map(t => renderTripCard(t)).join('')}
-            </div>
-          `}
-        </div>
-
-        <!-- Statistiques rapides -->
-        <div style="padding:var(--space-6) 0 var(--space-8)">
-          <h2 class="dashboard-section-title">Impact de la région Ouest</h2>
-          <div class="stats-grid">
-            ${renderQuickStats()}
-          </div>
-        </div>
-      </div>
-    `;
-
-    setupSearchAutocomplete();
-    setupSearchButton();
-  }
-
-  /**
-   * Statistiques rapides pour la home
-   */
-  function renderQuickStats() {
+    // Stats pour eco-banner
     const bookings = CedeoStore.getBookings().filter(b => b.status === 'confirmed');
-    const trips = CedeoStore.getTrips();
     let totalCO2 = 0;
     let totalDistance = 0;
-
     bookings.forEach(b => {
       const trip = CedeoStore.getTrip(b.tripId);
       if (trip && trip.distanceKm) {
@@ -103,36 +47,238 @@ const Trips = (() => {
       }
     });
 
-    return `
-      <div class="card stat-card">
-        <div class="stat-icon" style="background:var(--color-primary-bg);color:var(--color-primary)">🚗</div>
-        <div>
-          <div class="stat-value">${bookings.length}</div>
-          <div class="stat-label">Covoiturages réalisés</div>
+    // Compter les trajets par destination pour les cards destinations
+    const tripCounts = {};
+    CedeoStore.getTrips().filter(t => t.status === 'active').forEach(t => {
+      if (t.toId) tripCounts[t.toId] = (tripCounts[t.toId] || 0) + 1;
+      if (t.fromId) tripCounts[t.fromId] = (tripCounts[t.fromId] || 0) + 1;
+    });
+
+    app.innerHTML = `
+      <!-- ===== HERO — Style BlaBlaCar ===== -->
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="hero-text">
+            <h1 class="hero-title">
+              Covoiturez entre<br><span class="highlight">collègues CEDEO</span>
+            </h1>
+            <p class="hero-subtitle">
+              Partagez vos trajets professionnels en région Ouest. Économisez du temps, de l'argent et réduisez votre empreinte carbone.
+            </p>
+
+            <!-- Search bar -->
+            <div class="search-bar" id="home-search-bar">
+              <div class="search-field autocomplete-wrapper">
+                <svg class="search-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
+                <input class="form-input" type="text" id="search-from" placeholder="D'où partez-vous ?" autocomplete="off">
+                <div class="autocomplete-list" id="ac-from" style="display:none"></div>
+              </div>
+              <div class="search-field autocomplete-wrapper">
+                <svg class="search-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
+                <input class="form-input" type="text" id="search-to" placeholder="Où allez-vous ?" autocomplete="off">
+                <div class="autocomplete-list" id="ac-to" style="display:none"></div>
+              </div>
+              <div class="search-field">
+                <svg class="search-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <input class="form-input" type="date" id="search-date" min="${new Date().toISOString().split('T')[0]}">
+              </div>
+              <button class="btn btn-primary btn-search" id="search-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                Rechercher
+              </button>
+            </div>
+
+            <div class="hero-trust">
+              <div class="hero-trust-item">
+                <span>${AppIcons.i('users', 20)}</span>
+                <span><strong>${CedeoStore.getUsers().length}</strong> collaborateurs</span>
+              </div>
+              <div class="hero-trust-item">
+                <span>${AppIcons.i('building', 20)}</span>
+                <span><strong>10</strong> agences</span>
+              </div>
+              <div class="hero-trust-item">
+                <span>${AppIcons.i('leaf', 20)}</span>
+                <span><strong>${Math.round(totalCO2)} kg</strong> CO2 économisé</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80" alt="Collègues en covoiturage" loading="eager">
+          </div>
         </div>
       </div>
-      <div class="card stat-card">
-        <div class="stat-icon" style="background:var(--color-eco-bg);color:var(--color-eco)">🌱</div>
-        <div>
-          <div class="stat-value">${Math.round(totalCO2)} kg</div>
-          <div class="stat-label">CO2 économisé</div>
+
+      <!-- ===== Destinations populaires ===== -->
+      <div class="container" style="padding-top:var(--space-10)">
+        <h2 class="section-title">Destinations populaires</h2>
+        <p class="section-subtitle">Trouvez un covoiturage vers nos agences de la région Ouest</p>
+        <div class="destinations-grid">
+          ${[
+            { id: 'saint-malo', label: 'Saint-Malo' },
+            { id: 'rennes-lorient', label: 'Rennes' },
+            { id: 'dinan', label: 'Dinan' },
+            { id: 'fougeres', label: 'Fougères' },
+            { id: 'la-roche', label: 'La Roche-sur-Yon' },
+            { id: 'chateaubourg', label: 'Châteaubourg' }
+          ].map(d => `
+            <div class="destination-card" onclick="document.getElementById('search-to').value='${Utils.getAgencyById(d.id)?.name || ''}';document.getElementById('search-btn').click();">
+              <img src="${CITY_IMAGES[d.id]}" alt="${d.label}" loading="lazy">
+              <div class="destination-card-overlay">
+                <div class="destination-card-name">${d.label}</div>
+                <div class="destination-card-count">${tripCounts[d.id] || 0} trajet${(tripCounts[d.id] || 0) > 1 ? 's' : ''} disponible${(tripCounts[d.id] || 0) > 1 ? 's' : ''}</div>
+              </div>
+            </div>
+          `).join('')}
         </div>
       </div>
-      <div class="card stat-card">
-        <div class="stat-icon" style="background:var(--color-warning-bg);color:var(--color-warning)">📏</div>
-        <div>
-          <div class="stat-value">${Math.round(totalDistance)} km</div>
-          <div class="stat-label">Distance partagée</div>
+
+      ${matches.length > 0 ? `
+        <!-- ===== Matchs ===== -->
+        <div class="container" style="padding-top:var(--space-10)">
+          <h2 class="section-title">Recommandés pour vous</h2>
+          <p class="section-subtitle">Ces trajets correspondent à votre profil et vos habitudes</p>
+          <div class="search-results-list">
+            ${matches.slice(0, 3).map(m => renderTripCard(m.trip, true)).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- ===== Prochains trajets ===== -->
+      <div class="container" style="padding-top:var(--space-10)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)">
+          <h2 class="section-title" style="margin-bottom:0">Prochains trajets</h2>
+          ${currentUser ? '<a href="#/publish" class="btn btn-primary btn-sm">+ Publier un trajet</a>' : ''}
+        </div>
+        <p class="section-subtitle">Les prochains départs proposés par vos collègues</p>
+        ${upcomingTrips.length === 0 ? `
+          <div class="card">
+            <div class="empty-state">
+              ${window.AppIcons.emptyTrips()}
+              <div class="empty-state-title">Aucun trajet disponible</div>
+              <div class="empty-state-text">Soyez le premier à publier un trajet !</div>
+              ${currentUser ? '<a href="#/publish" class="btn btn-primary">Publier un trajet</a>' : '<a href="#/login" class="btn btn-primary">Se connecter</a>'}
+            </div>
+          </div>
+        ` : `
+          <div class="search-results-list">
+            ${upcomingTrips.map(t => renderTripCard(t)).join('')}
+          </div>
+        `}
+      </div>
+
+      ${currentUser ? `
+      <!-- ===== Challenges & Événements ===== -->
+      <div class="container" style="padding-top:var(--space-10)">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:var(--space-4)">
+          <!-- Challenge card -->
+          <div class="card card-clickable" onclick="App.navigate('/challenges')" style="padding:var(--space-6);border-left:4px solid #f59e0b">
+            <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
+              <span style="color:#f59e0b">${AppIcons.i('trophy', 28, '#f59e0b')}</span>
+              <div>
+                <div style="font-weight:var(--font-weight-bold)">Challenges du mois</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Relevez les défis et gagnez des badges</div>
+              </div>
+            </div>
+            <div style="font-size:var(--font-size-sm);color:var(--color-primary);font-weight:var(--font-weight-medium)">Voir mes challenges →</div>
+          </div>
+          <!-- Carte interactive -->
+          <div class="card card-clickable" onclick="App.navigate('/map')" style="padding:var(--space-6);border-left:4px solid #003DA5">
+            <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
+              <span>${AppIcons.i('map', 28, '#003DA5')}</span>
+              <div>
+                <div style="font-weight:var(--font-weight-bold)">Carte Interactive</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Explorez les agences et trajets sur la carte</div>
+              </div>
+            </div>
+            <div style="font-size:var(--font-size-sm);color:var(--color-primary);font-weight:var(--font-weight-medium)">Ouvrir la carte →</div>
+          </div>
+          <!-- Événements -->
+          <div class="card card-clickable" onclick="App.navigate('/events')" style="padding:var(--space-6);border-left:4px solid #16a34a">
+            <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
+              <span>${AppIcons.i('calendar', 28, '#16a34a')}</span>
+              <div>
+                <div style="font-weight:var(--font-weight-bold)">Événements Région Ouest</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Challenges collectifs et rencontres</div>
+              </div>
+            </div>
+            <div style="font-size:var(--font-size-sm);color:var(--color-primary);font-weight:var(--font-weight-medium)">Découvrir les événements →</div>
+          </div>
         </div>
       </div>
-      <div class="card stat-card">
-        <div class="stat-icon" style="background:var(--color-success-bg);color:var(--color-success)">🌳</div>
-        <div>
-          <div class="stat-value">${Utils.co2ToTrees(totalCO2)}</div>
-          <div class="stat-label">Arbres équivalents</div>
+      ` : ''}
+
+      <!-- ===== Comment ça marche ===== -->
+      <div class="how-it-works">
+        <div class="container" style="text-align:center">
+          <h2 class="section-title">Comment ça marche ?</h2>
+          <p class="section-subtitle" style="max-width:500px;margin:0 auto var(--space-8)">Un covoiturage simple et rapide en 3 étapes</p>
+          <div class="how-it-works-grid">
+            <div class="how-step">
+              <div class="how-step-img">
+                <img src="https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=400&q=80" alt="Recherche" loading="lazy">
+              </div>
+              <div class="how-step-number">1</div>
+              <div class="how-step-title">Recherchez</div>
+              <div class="how-step-desc">Entrez votre destination et la date de votre déplacement professionnel.</div>
+            </div>
+            <div class="how-step">
+              <div class="how-step-img">
+                <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80" alt="Réservez" loading="lazy">
+              </div>
+              <div class="how-step-number">2</div>
+              <div class="how-step-title">Réservez</div>
+              <div class="how-step-desc">Choisissez un trajet avec un collègue et réservez votre place en un clic.</div>
+            </div>
+            <div class="how-step">
+              <div class="how-step-img">
+                <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&q=80" alt="Voyagez" loading="lazy">
+              </div>
+              <div class="how-step-number">3</div>
+              <div class="how-step-title">Voyagez</div>
+              <div class="how-step-desc">Retrouvez votre conducteur, partagez la route et renforcez les liens d'équipe.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Eco Banner ===== -->
+      <div class="container" style="padding:var(--space-10) var(--space-4)">
+        <div class="eco-banner">
+          <div class="eco-banner-bg">
+            <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1000&q=80" alt="Nature" loading="lazy">
+          </div>
+          <div class="eco-banner-content">
+            <div class="eco-banner-title">Notre impact positif, ensemble.</div>
+            <div class="eco-banner-text">
+              Chaque covoiturage compte. Ensemble, les collaborateurs de la région Ouest CEDEO contribuent à réduire l'empreinte carbone de Saint-Gobain.
+            </div>
+            <div class="eco-stats-row">
+              <div class="eco-stat">
+                <div class="eco-stat-value">${bookings.length}</div>
+                <div class="eco-stat-label">Covoiturages</div>
+              </div>
+              <div class="eco-stat">
+                <div class="eco-stat-value">${Math.round(totalCO2)} kg</div>
+                <div class="eco-stat-label">CO2 économisé</div>
+              </div>
+              <div class="eco-stat">
+                <div class="eco-stat-value">${Math.round(totalDistance)} km</div>
+                <div class="eco-stat-label">Km partagés</div>
+              </div>
+              <div class="eco-stat">
+                <div class="eco-stat-value">${Utils.co2ToTrees(totalCO2)}</div>
+                <div class="eco-stat-label">Arbres équivalents</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;
+
+    setupSearchAutocomplete();
+    setupSearchButton();
   }
 
   /**
@@ -150,7 +296,7 @@ const Trips = (() => {
 
     return `
       <div class="card card-clickable trip-card ${isMatch ? 'match-card' : ''}" onclick="App.navigate('/trip/${trip.id}')">
-        ${isMatch ? '<div class="match-badge">✨ Match</div>' : ''}
+        ${isMatch ? '<div class="match-badge">' + AppIcons.i('sparkle', 14, '#f59e0b') + ' Match</div>' : ''}
         <div class="trip-card-header">
           <div class="avatar avatar-md" style="background-color:${Utils.getAvatarColor(driver.id)}">${Utils.getInitials(driver.firstName, driver.lastName)}</div>
           <div class="trip-card-driver-info">
@@ -185,9 +331,9 @@ const Trips = (() => {
 
         <div class="trip-card-meta">
           <div class="trip-card-info">
-            ${trip.distanceKm ? `<div class="trip-card-info-item">📏 ${trip.distanceKm} km</div>` : ''}
-            <div class="trip-card-info-item">⏱ ${durationMin} min</div>
-            ${trip.distanceKm ? `<div class="trip-card-info-item">🌱 ${Utils.calculateCO2Saved(trip.distanceKm, 1)} kg CO2</div>` : ''}
+            ${trip.distanceKm ? `<div class="trip-card-info-item">${AppIcons.i('ruler', 14)} ${trip.distanceKm} km</div>` : ''}
+            <div class="trip-card-info-item">${AppIcons.i('clock', 14)} ${durationMin} min</div>
+            ${trip.distanceKm ? `<div class="trip-card-info-item">${AppIcons.i('leaf', 14, '#22c55e')} ${Utils.calculateCO2Saved(trip.distanceKm, 1)} kg CO2</div>` : ''}
           </div>
           ${driver.preferences ? Utils.renderPrefIcons(driver.preferences) : ''}
         </div>
@@ -288,7 +434,22 @@ const Trips = (() => {
 
               ${trip.recurring ? `
                 <div style="margin-top:var(--space-3)">
-                  <span class="badge badge-primary">🔄 Trajet récurrent : ${trip.recurringDays?.map(d => ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][d]).join(', ') || 'Tous les jours'}</span>
+                  <span class="badge badge-primary">${AppIcons.i('refresh', 14)} Trajet récurrent : ${trip.recurringDays?.map(d => ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][d]).join(', ') || 'Tous les jours'}</span>
+                </div>
+              ` : ''}
+
+              ${trip.fromId && typeof MapModule !== 'undefined' ? `
+                <div class="divider"></div>
+                <div style="display:flex;gap:var(--space-4);align-items:center">
+                  <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Météo départ</div>
+                  <span>${MapModule.getWeatherIcon(trip.fromId)}</span>
+                  <span style="font-size:var(--font-size-sm);font-weight:var(--font-weight-medium)">${MapModule.getWeatherTemp(trip.fromId)}°C — ${MapModule.getWeatherDesc(trip.fromId)}</span>
+                  ${trip.toId ? `
+                    <span style="color:var(--color-text-light);margin:0 var(--space-2)">|</span>
+                    <div style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Arrivée</div>
+                    <span>${MapModule.getWeatherIcon(trip.toId)}</span>
+                    <span style="font-size:var(--font-size-sm);font-weight:var(--font-weight-medium)">${MapModule.getWeatherTemp(trip.toId)}°C</span>
+                  ` : ''}
                 </div>
               ` : ''}
             </div>
@@ -348,6 +509,15 @@ const Trips = (() => {
               ` : ''}
             </div>
 
+            <!-- Save to favorites -->
+            ${currentUser && trip.fromId && trip.toId ? `
+              <div class="card" style="margin-bottom:var(--space-6)">
+                <button class="btn btn-outline btn-sm" id="save-fav-btn" style="width:100%">
+                  ${AppIcons.i('bookmark', 16)} Sauvegarder cet itinéraire
+                </button>
+              </div>
+            ` : ''}
+
             <!-- Actions -->
             <div class="card">
               ${isPast ? `
@@ -396,6 +566,24 @@ const Trips = (() => {
     document.getElementById('book-trip-btn')?.addEventListener('click', () => bookTrip(trip));
     document.getElementById('cancel-trip-btn')?.addEventListener('click', () => cancelTrip(trip));
     document.getElementById('cancel-booking-btn')?.addEventListener('click', () => cancelBooking(existingBooking));
+
+    // Save to favorites
+    document.getElementById('save-fav-btn')?.addEventListener('click', () => {
+      if (typeof Events !== 'undefined' && currentUser) {
+        const time = new Date(trip.departureTime);
+        Events.addFavorite(currentUser.id, {
+          fromId: trip.fromId,
+          fromName: trip.fromName,
+          toId: trip.toId,
+          toName: trip.toName,
+          defaultTime: `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`,
+          defaultSeats: trip.seats
+        });
+        window.App.showToast('Itinéraire sauvegardé dans vos favoris !', 'success');
+        document.getElementById('save-fav-btn').innerHTML = AppIcons.i('check', 16) + ' Sauvegardé';
+        document.getElementById('save-fav-btn').disabled = true;
+      }
+    });
   }
 
   /**
@@ -421,7 +609,7 @@ const Trips = (() => {
       tripId: trip.id,
       title: 'Nouvelle réservation',
       message: `${currentUser.firstName} a réservé ${seats} place${seats > 1 ? 's' : ''} pour votre trajet ${trip.fromName} → ${trip.toName}.`,
-      icon: '🎫'
+      icon: 'ticket'
     });
 
     // Notification au passager
@@ -431,7 +619,7 @@ const Trips = (() => {
       tripId: trip.id,
       title: 'Réservation confirmée',
       message: `Votre place est réservée pour le trajet ${trip.fromName} → ${trip.toName} le ${Utils.formatDateShort(trip.departureTime)}.`,
-      icon: '✅'
+      icon: 'check-circle'
     });
 
     window.App.showToast('Réservation confirmée !', 'success');
@@ -457,7 +645,7 @@ const Trips = (() => {
         tripId: trip.id,
         title: 'Trajet annulé',
         message: `Le trajet ${trip.fromName} → ${trip.toName} du ${Utils.formatDateShort(trip.departureTime)} a été annulé par le conducteur.`,
-        icon: '❌'
+        icon: 'x-circle'
       });
     });
 
@@ -483,7 +671,7 @@ const Trips = (() => {
         tripId: trip.id,
         title: 'Réservation annulée',
         message: `${currentUser.firstName} a annulé sa réservation pour ${trip.fromName} → ${trip.toName}.`,
-        icon: '↩️'
+        icon: 'undo'
       });
     }
 
@@ -512,7 +700,7 @@ const Trips = (() => {
 
         <form id="publish-form" novalidate>
           <div class="card" style="margin-bottom:var(--space-4)">
-            <div class="publish-section-title">📍 Itinéraire</div>
+            <div class="publish-section-title">${AppIcons.i('pin', 18)} Itinéraire</div>
             <div style="display:flex;flex-direction:column;gap:var(--space-4)">
               <div class="form-group autocomplete-wrapper">
                 <label class="form-label">Lieu de départ *</label>
@@ -530,7 +718,7 @@ const Trips = (() => {
           </div>
 
           <div class="card" style="margin-bottom:var(--space-4)">
-            <div class="publish-section-title">🕐 Date et horaire</div>
+            <div class="publish-section-title">${AppIcons.i('clock', 18)} Date et horaire</div>
             <div style="display:flex;flex-direction:column;gap:var(--space-4)">
               <div class="form-row">
                 <div class="form-group">
@@ -563,7 +751,7 @@ const Trips = (() => {
           </div>
 
           <div class="card" style="margin-bottom:var(--space-4)">
-            <div class="publish-section-title">🚗 Détails</div>
+            <div class="publish-section-title">${AppIcons.i('car', 18)} Détails</div>
             <div style="display:flex;flex-direction:column;gap:var(--space-4)">
               <div class="form-row">
                 <div class="form-group">
@@ -719,7 +907,7 @@ const Trips = (() => {
           tripId: trip.id,
           title: 'Trajet compatible trouvé !',
           message: `Un nouveau trajet ${trip.fromName} → ${trip.toName} correspond à vos recherches.`,
-          icon: '✨'
+          icon: 'sparkle'
         });
       });
 
@@ -730,7 +918,7 @@ const Trips = (() => {
         tripId: trip.id,
         title: `${matches.length} match${matches.length > 1 ? 's' : ''} trouvé${matches.length > 1 ? 's' : ''} !`,
         message: `Des collègues cherchent un trajet compatible avec le vôtre.`,
-        icon: '✨'
+        icon: 'sparkle'
       });
     }
 
@@ -881,7 +1069,7 @@ const Trips = (() => {
 
         ${matches.length > 0 ? `
           <div style="margin-bottom:var(--space-6)">
-            <h2 class="dashboard-section-title">🎯 Matchs suggérés</h2>
+            <h2 class="dashboard-section-title">${AppIcons.i('target', 18)} Matchs suggérés</h2>
             <div class="search-results-list">
               ${matches.slice(0, 2).map(m => renderTripCard(m.trip, true)).join('')}
             </div>
@@ -893,7 +1081,7 @@ const Trips = (() => {
             <!-- Prochains trajets conducteur -->
             <div style="margin-bottom:var(--space-6)">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
-                <h2 class="dashboard-section-title" style="margin:0">🚗 Mes trajets (conducteur)</h2>
+                <h2 class="dashboard-section-title" style="margin:0">${AppIcons.i('car', 18)} Mes trajets (conducteur)</h2>
                 <a href="#/publish" class="btn btn-primary btn-sm">+ Nouveau</a>
               </div>
               ${upcomingDriverTrips.length === 0 ? `
@@ -906,7 +1094,7 @@ const Trips = (() => {
 
             <!-- Prochains trajets passager -->
             <div style="margin-bottom:var(--space-6)">
-              <h2 class="dashboard-section-title">🎫 Mes réservations (passager)</h2>
+              <h2 class="dashboard-section-title">${AppIcons.i('ticket', 18)} Mes réservations (passager)</h2>
               ${upcomingBookings.length === 0 ? `
                 <div class="card card-flat" style="text-align:center;padding:var(--space-6)">
                   <p style="color:var(--color-text-secondary)">Aucune réservation à venir</p>
@@ -919,7 +1107,7 @@ const Trips = (() => {
           <div>
             <!-- Historique -->
             <div>
-              <h2 class="dashboard-section-title">📋 Historique</h2>
+              <h2 class="dashboard-section-title">${AppIcons.i('clipboard', 18)} Historique</h2>
               <div class="card card-flat" style="padding:0;max-height:400px;overflow-y:auto">
                 ${(pastTrips.length + pastBookings.length) === 0 ? `
                   <div style="text-align:center;padding:var(--space-6);color:var(--color-text-secondary)">Aucun trajet passé</div>
@@ -927,7 +1115,7 @@ const Trips = (() => {
                   ${pastTrips.slice(0, 5).map(t => `
                     <div class="notification-item" onclick="App.navigate('/trip/${t.id}')" style="cursor:pointer">
                       <div class="notification-icon" style="background:${t.status === 'cancelled' ? 'var(--color-error-bg)' : 'var(--color-primary-bg)'}">
-                        ${t.status === 'cancelled' ? '❌' : '🚗'}
+                        ${t.status === 'cancelled' ? AppIcons.i('x-circle', 18) : AppIcons.i('car', 18)}
                       </div>
                       <div class="notification-content">
                         <div class="notification-text">${Utils.escapeHtml(t.fromName)} → ${Utils.escapeHtml(t.toName)}</div>
@@ -938,7 +1126,7 @@ const Trips = (() => {
                   ${pastBookings.slice(0, 5).map(b => `
                     <div class="notification-item" onclick="App.navigate('/trip/${b.trip.id}')" style="cursor:pointer">
                       <div class="notification-icon" style="background:${b.status === 'cancelled' ? 'var(--color-error-bg)' : 'var(--color-success-bg)'}">
-                        ${b.status === 'cancelled' ? '↩️' : '🎫'}
+                        ${b.status === 'cancelled' ? AppIcons.i('undo', 18) : AppIcons.i('ticket', 18)}
                       </div>
                       <div class="notification-content">
                         <div class="notification-text">${Utils.escapeHtml(b.trip.fromName)} → ${Utils.escapeHtml(b.trip.toName)}</div>
@@ -978,7 +1166,7 @@ const Trips = (() => {
 
       list.innerHTML = results.map(a => `
         <div class="autocomplete-item" data-id="${a.id}" data-name="${a.name}">
-          <span>📍</span> ${a.name}
+          ${AppIcons.i('pin', 16)} ${a.name}
         </div>
       `).join('');
       list.style.display = 'block';

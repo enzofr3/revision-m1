@@ -44,7 +44,7 @@ const Notifications = (() => {
             tripId: trip.id,
             title: 'Rappel : trajet demain',
             message: `Votre trajet ${trip.fromName} → ${trip.toName} est prévu demain à ${Utils.formatTime(trip.departureTime)}.`,
-            icon: '📅'
+            icon: 'calendar'
           });
         }
       }
@@ -61,7 +61,7 @@ const Notifications = (() => {
             tripId: trip.id,
             title: 'Départ dans 1 heure',
             message: `Votre trajet ${trip.fromName} → ${trip.toName} part bientôt !`,
-            icon: '⏰'
+            icon: 'alarm-clock'
           });
         }
       }
@@ -95,7 +95,7 @@ const Notifications = (() => {
               targetUserId: trip.driverId,
               title: 'Comment s\'est passé votre trajet ?',
               message: `Notez ${driver ? driver.firstName : 'votre conducteur'} pour le trajet ${trip.fromName} → ${trip.toName}.`,
-              icon: '⭐'
+              icon: 'star'
             });
           }
         }
@@ -117,7 +117,7 @@ const Notifications = (() => {
               targetUserId: booking.userId,
               title: 'Notez votre passager',
               message: `Comment s'est passé le trajet avec ${passenger ? passenger.firstName : 'votre passager'} ?`,
-              icon: '⭐'
+              icon: 'star'
             });
           }
         }
@@ -215,7 +215,7 @@ const Notifications = (() => {
     return `
       <div class="notification-item ${notif.read ? '' : 'unread'}" data-id="${notif.id}">
         <div class="notification-icon" style="background:${iconBg[notif.type] || 'var(--color-divider)'}">
-          ${notif.icon || '🔔'}
+          ${AppIcons.i(notif.icon || 'bell', 20)}
         </div>
         <div class="notification-content">
           <div class="notification-text"><strong>${Utils.escapeHtml(notif.title)}</strong></div>

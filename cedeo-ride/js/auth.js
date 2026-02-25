@@ -12,49 +12,59 @@ const Auth = (() => {
     const app = document.getElementById('app-content');
     app.innerHTML = `
       <div class="login-page">
-        <div class="card login-card">
-          <div class="login-logo">
-            ${window.AppIcons.logoFull()}
-            <p>Covoiturage interne — Région Ouest</p>
+        <div class="login-image">
+          <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80" alt="Covoiturage" loading="lazy">
+          <div class="login-image-text">
+            <h2>Partagez la route, pas les frais.</h2>
+            <p>Rejoignez vos collègues CEDEO pour des trajets plus économiques, plus écologiques et plus conviviaux.</p>
           </div>
-          <form id="login-form" novalidate>
-            <div style="display:flex;flex-direction:column;gap:var(--space-4)">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label" for="login-firstname">Prénom *</label>
-                  <input class="form-input" type="text" id="login-firstname" placeholder="Votre prénom" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="login-lastname">Nom *</label>
-                  <input class="form-input" type="text" id="login-lastname" placeholder="Votre nom" required>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="login-email">Email professionnel *</label>
-                <input class="form-input" type="email" id="login-email" placeholder="prenom.nom@cedeo.fr" required>
-                <span class="form-hint">@cedeo.fr ou @saint-gobain.com</span>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="login-agency">Agence de rattachement *</label>
-                <select class="form-select" id="login-agency" required>
-                  <option value="">Sélectionnez votre agence</option>
-                  ${Utils.AGENCIES.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="login-phone">Téléphone (optionnel)</label>
-                <input class="form-input" type="tel" id="login-phone" placeholder="06 XX XX XX XX">
-              </div>
-              <div id="login-error" class="form-error" style="display:none"></div>
-              <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
-                Se connecter / S'inscrire
-              </button>
+        </div>
+        <div class="login-form-side">
+          <div class="login-card">
+            <div class="login-logo">
+              ${window.AppIcons.logoFull()}
+              <h1>Bienvenue</h1>
+              <p>Connectez-vous pour accéder au covoiturage interne</p>
             </div>
-          </form>
-          <div style="text-align:center;margin-top:var(--space-4)">
-            <p style="font-size:var(--font-size-xs);color:var(--color-text-light)">
-              En vous connectant, vous accédez à la plateforme de covoiturage<br>de la région Ouest CEDEO.
-            </p>
+            <form id="login-form" novalidate>
+              <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="login-firstname">Prénom *</label>
+                    <input class="form-input" type="text" id="login-firstname" placeholder="Votre prénom" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="login-lastname">Nom *</label>
+                    <input class="form-input" type="text" id="login-lastname" placeholder="Votre nom" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="login-email">Email professionnel *</label>
+                  <input class="form-input" type="email" id="login-email" placeholder="prenom.nom@cedeo.fr" required>
+                  <span class="form-hint">@cedeo.fr ou @saint-gobain.com</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="login-agency">Agence de rattachement *</label>
+                  <select class="form-select" id="login-agency" required>
+                    <option value="">Sélectionnez votre agence</option>
+                    ${Utils.AGENCIES.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="login-phone">Téléphone (optionnel)</label>
+                  <input class="form-input" type="tel" id="login-phone" placeholder="06 XX XX XX XX">
+                </div>
+                <div id="login-error" class="form-error" style="display:none"></div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                  Se connecter / S'inscrire
+                </button>
+              </div>
+            </form>
+            <div style="text-align:center;margin-top:var(--space-6)">
+              <p style="font-size:var(--font-size-xs);color:var(--color-text-light)">
+                En vous connectant, vous accédez à la plateforme de covoiturage<br>de la région Ouest CEDEO (Saint-Gobain).
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -112,8 +122,13 @@ const Auth = (() => {
         type: 'welcome',
         title: 'Bienvenue sur CEDEO Ride !',
         message: 'Commencez par publier un trajet ou recherchez un covoiturage.',
-        icon: '🎉'
+        icon: 'confetti'
       });
+
+      // Reset onboarding for new user
+      if (typeof Onboarding !== 'undefined') {
+        localStorage.removeItem('cedeoride_onboarding_done');
+      }
     }
 
     CedeoStore.setCurrentUser(user.id);
@@ -138,12 +153,19 @@ const Auth = (() => {
     const ratingData = CedeoStore.getUserAverageRating(user.id);
     const badges = Utils.getUserBadges(user.id);
     const ratings = CedeoStore.getUserRatings(user.id);
+    const trustLevel = typeof TrustSystem !== 'undefined' ? TrustSystem.getUserTrustLevel(user.id) : null;
+    const passportData = typeof GreenPassport !== 'undefined' ? GreenPassport.getUserPassportData(user.id) : null;
 
     app.innerHTML = `
       <div class="profile-header">
         <div class="avatar avatar-2xl" style="background-color:${Utils.getAvatarColor(user.id)};margin:0 auto var(--space-4)">${Utils.getInitials(user.firstName, user.lastName)}</div>
         <div class="profile-name">${Utils.escapeHtml(user.firstName)} ${Utils.escapeHtml(user.lastName)}</div>
         <div class="profile-email">${Utils.escapeHtml(user.email)}</div>
+        ${trustLevel ? `
+          <div style="margin-top:var(--space-2)">
+            <span class="badge badge-trust-${trustLevel.id}" style="font-size:var(--font-size-xs);display:inline-flex;align-items:center;gap:4px">${AppIcons.i(trustLevel.iconName, 14, trustLevel.color)} ${trustLevel.name}</span>
+          </div>
+        ` : ''}
         ${ratingData.count > 0 ? `
           <div style="margin-top:var(--space-2);display:flex;align-items:center;justify-content:center;gap:var(--space-2)">
             ${Utils.renderStars(ratingData.average)}
@@ -152,11 +174,36 @@ const Auth = (() => {
         ` : ''}
         ${badges.length > 0 ? `
           <div class="profile-badges">
-            ${badges.map(b => `<span class="badge badge-success">${b.emoji} ${b.label}</span>`).join('')}
+            ${badges.map(b => `<span class="badge badge-success" style="display:inline-flex;align-items:center;gap:4px">${AppIcons.i(b.iconName || 'star', 14)} ${b.label}</span>`).join('')}
           </div>
         ` : ''}
+        ${typeof Gamification !== 'undefined' ? (() => {
+          const level = Gamification.getUserLevel(user.id);
+          const { unlocked } = Gamification.getUserAchievements(user.id);
+          return `
+            <div style="margin-top:var(--space-4);display:flex;align-items:center;justify-content:center;gap:var(--space-3)">
+              <div style="width:32px;height:32px;border-radius:50%;background:${level.color};display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;font-size:14px">${level.level}</div>
+              <span style="opacity:0.9;font-size:var(--font-size-sm)">${level.name} · ${unlocked.length} achievements</span>
+            </div>
+          `;
+        })() : ''}
       </div>
       <div class="container">
+        ${passportData ? `
+          <div class="profile-section">
+            <div class="card" style="text-align:center;background:linear-gradient(to right, #e8f5e9, #c8e6c9);border:none">
+              <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-4)">
+                <span>${AppIcons.i(passportData.stage.iconName || 'seedling', 32, passportData.stage.color)}</span>
+                <div>
+                  <div style="font-weight:var(--font-weight-bold);color:#1b5e20">${passportData.stage.name}</div>
+                  <div style="font-size:var(--font-size-sm);color:#388e3c">${passportData.totalCO2} kg CO2 économisé</div>
+                </div>
+                ${isOwn ? '<a href="#/passport" class="btn btn-sm" style="background:#2e7d32;color:#fff;margin-left:auto">Mon Passeport</a>' : ''}
+              </div>
+            </div>
+          </div>
+        ` : ''}
+
         <div class="profile-section">
           <div class="profile-section-title">Informations</div>
           <div class="card card-flat">
@@ -191,6 +238,18 @@ const Auth = (() => {
         ` : ''}
 
         ${isOwn ? `
+          <div class="profile-section">
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+              <a href="#/passport" class="btn btn-outline btn-sm">${AppIcons.i('leaf', 16)} Passeport Vert</a>
+              <a href="#/challenges" class="btn btn-outline btn-sm">${AppIcons.i('trophy', 16)} Challenges</a>
+              <a href="#/neighbors" class="btn btn-outline btn-sm">${AppIcons.i('pin', 16)} Voisins</a>
+              <a href="#/pools" class="btn btn-outline btn-sm">${AppIcons.i('users', 16)} Mes pools</a>
+              <a href="#/routines" class="btn btn-outline btn-sm">${AppIcons.i('refresh', 16)} Routines</a>
+              <a href="#/events" class="btn btn-outline btn-sm">${AppIcons.i('calendar', 16)} Événements</a>
+              <a href="#/map" class="btn btn-outline btn-sm">${AppIcons.i('map', 16)} Carte</a>
+              <button class="btn btn-ghost btn-sm" onclick="CedeoStore.logout();App.navigate('/');App.renderShell();">Déconnexion</button>
+            </div>
+          </div>
           <div class="profile-section">
             <div class="profile-section-title">Modifier mon profil</div>
             <div class="card card-flat" style="padding:var(--space-4)">

@@ -284,7 +284,7 @@ const Utils = (() => {
     );
 
     if (userTrips.length >= 10) {
-      badges.push({ emoji: '🌱', label: 'Éco-champion', desc: '10+ covoiturages effectués' });
+      badges.push({ iconName: 'leaf', label: 'Éco-champion', desc: '10+ covoiturages effectués' });
     }
 
     // Note moyenne
@@ -292,7 +292,7 @@ const Utils = (() => {
     if (userRatings.length > 0) {
       const avgRating = userRatings.reduce((sum, r) => sum + r.rating, 0) / userRatings.length;
       if (avgRating >= 4.5) {
-        badges.push({ emoji: '⭐', label: 'Top conducteur', desc: 'Note moyenne > 4.5' });
+        badges.push({ iconName: 'star', label: 'Top conducteur', desc: 'Note moyenne > 4.5' });
       }
     }
 
@@ -301,13 +301,13 @@ const Utils = (() => {
     bookings.filter(b => b.userId === userId).forEach(b => uniquePeople.add(b.driverId));
     bookings.filter(b => b.driverId === userId).forEach(b => uniquePeople.add(b.userId));
     if (uniquePeople.size >= 5) {
-      badges.push({ emoji: '🤝', label: 'Fédérateur', desc: 'A covoituré avec 5+ personnes' });
+      badges.push({ iconName: 'handshake', label: 'Fédérateur', desc: 'A covoituré avec 5+ personnes' });
     }
 
     // Pionnier (parmi les 3 premiers inscrits)
     const sortedUsers = [...users].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     if (sortedUsers.findIndex(u => u.id === userId) < 3) {
-      badges.push({ emoji: '🏆', label: 'Pionnier', desc: 'Parmi les premiers inscrits' });
+      badges.push({ iconName: 'trophy', label: 'Pionnier', desc: 'Parmi les premiers inscrits' });
     }
 
     return badges;

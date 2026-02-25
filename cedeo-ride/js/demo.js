@@ -499,11 +499,11 @@ const DemoData = (() => {
 
     // --- 6. Notifications ---
     const notifications = [
-      { id: 'notif_01', userId: 'usr_sophie', type: 'new_booking', tripId: 'trip_01', title: 'Nouvelle réservation', message: 'Thomas a réservé 1 place pour votre trajet Rennes → Saint-Malo.', icon: '🎫', read: true, createdAt: daysAgo(1) },
-      { id: 'notif_02', userId: 'usr_sophie', type: 'new_booking', tripId: 'trip_01', title: 'Nouvelle réservation', message: 'Camille a réservé 1 place pour votre trajet Rennes → Saint-Malo.', icon: '🎫', read: false, createdAt: daysAgo(1) },
-      { id: 'notif_03', userId: 'usr_thomas', type: 'booking_confirmed', tripId: 'trip_01', title: 'Réservation confirmée', message: 'Votre place est réservée pour le trajet Rennes → Saint-Malo.', icon: '✅', read: true, createdAt: daysAgo(1) },
-      { id: 'notif_04', userId: 'usr_maxime', type: 'booking_confirmed', tripId: 'trip_04', title: 'Réservation confirmée', message: 'Votre place est réservée pour le trajet Châteaubourg → Rennes.', icon: '✅', read: true, createdAt: daysAgo(4) },
-      { id: 'notif_05', userId: 'usr_nicolas', type: 'match', tripId: 'trip_02', title: 'Trajet compatible trouvé !', message: 'Un trajet Rennes → Dinan correspond à votre itinéraire.', icon: '✨', read: false, createdAt: daysAgo(3) }
+      { id: 'notif_01', userId: 'usr_sophie', type: 'new_booking', tripId: 'trip_01', title: 'Nouvelle réservation', message: 'Thomas a réservé 1 place pour votre trajet Rennes → Saint-Malo.', icon: 'ticket', read: true, createdAt: daysAgo(1) },
+      { id: 'notif_02', userId: 'usr_sophie', type: 'new_booking', tripId: 'trip_01', title: 'Nouvelle réservation', message: 'Camille a réservé 1 place pour votre trajet Rennes → Saint-Malo.', icon: 'ticket', read: false, createdAt: daysAgo(1) },
+      { id: 'notif_03', userId: 'usr_thomas', type: 'booking_confirmed', tripId: 'trip_01', title: 'Réservation confirmée', message: 'Votre place est réservée pour le trajet Rennes → Saint-Malo.', icon: 'check-circle', read: true, createdAt: daysAgo(1) },
+      { id: 'notif_04', userId: 'usr_maxime', type: 'booking_confirmed', tripId: 'trip_04', title: 'Réservation confirmée', message: 'Votre place est réservée pour le trajet Châteaubourg → Rennes.', icon: 'check-circle', read: true, createdAt: daysAgo(4) },
+      { id: 'notif_05', userId: 'usr_nicolas', type: 'match', tripId: 'trip_02', title: 'Trajet compatible trouvé !', message: 'Un trajet Rennes → Dinan correspond à votre itinéraire.', icon: 'sparkle', read: false, createdAt: daysAgo(3) }
     ];
 
     // --- Sauvegarder ---
