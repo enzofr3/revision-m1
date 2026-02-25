@@ -1,12 +1,43 @@
 /* ===========================================
    CEDEO Ride — Module de messagerie
    Chat entre conducteur et passager
+   UI/UX redesign avec notification email
    =========================================== */
 
 const Chat = (() => {
 
   let currentContactId = null;
   let messageCheckInterval = null;
+
+  // Clé localStorage pour la préférence de notification email
+  const EMAIL_NOTIF_KEY = 'cedeoride_email_notif';
+
+  /**
+   * Vérifie si les notifications email sont activées pour un utilisateur
+   */
+  function isEmailNotifEnabled(userId) {
+    try {
+      const prefs = JSON.parse(localStorage.getItem(EMAIL_NOTIF_KEY)) || {};
+      return !!prefs[userId];
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Active/désactive les notifications email
+   */
+  function setEmailNotifEnabled(userId, enabled) {
+    try {
+      const prefs = JSON.parse(localStorage.getItem(EMAIL_NOTIF_KEY)) || {};
+      prefs[userId] = enabled;
+      localStorage.setItem(EMAIL_NOTIF_KEY, JSON.stringify(prefs));
+    } catch {
+      const prefs = {};
+      prefs[userId] = enabled;
+      localStorage.setItem(EMAIL_NOTIF_KEY, JSON.stringify(prefs));
+    }
+  }
 
   /**
    * Affiche la page de messagerie (liste des conversations)
@@ -25,15 +56,26 @@ const Chat = (() => {
 
     // Sur mobile, afficher soit la liste soit la conversation
     const showConversation = !!currentContactId;
+    const emailNotifOn = isEmailNotifEnabled(currentUser.id);
 
     app.innerHTML = `
       <div class="chat-layout">
         <div class="chat-sidebar ${showConversation ? 'hidden-mobile' : ''}">
-          <div class="chat-sidebar-header">Messages</div>
+          <div class="chat-sidebar-header">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span>Messages</span>
+              <span style="font-size:var(--font-size-xs);font-weight:var(--font-weight-normal);color:var(--color-text-light)">${conversations.length} conversation${conversations.length > 1 ? 's' : ''}</span>
+            </div>
+          </div>
           ${conversations.length === 0 ? `
-            <div style="padding:var(--space-8) var(--space-4);text-align:center;color:var(--color-text-secondary)">
-              <p>Aucune conversation</p>
-              <p style="font-size:var(--font-size-xs);margin-top:var(--space-2)">Réservez un trajet pour commencer à discuter avec le conducteur.</p>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:var(--space-8) var(--space-5)">
+              <div style="text-align:center">
+                <div style="width:64px;height:64px;border-radius:var(--radius-full);background:var(--color-primary-bg);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4)">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <p style="font-weight:var(--font-weight-semibold);margin-bottom:var(--space-2);color:var(--color-text)">Aucune conversation</p>
+                <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary);max-width:220px;margin:0 auto">Reservez un trajet pour commencer a discuter avec le conducteur.</p>
+              </div>
             </div>
           ` : conversations.map(conv => {
             const contact = CedeoStore.getUser(conv.contactId);
@@ -56,13 +98,16 @@ const Chat = (() => {
         </div>
 
         <div class="chat-main ${!showConversation ? 'hidden-mobile' : ''}" id="chat-main">
-          ${currentContactId ? renderConversation(currentUser.id, currentContactId) : `
+          ${currentContactId ? renderConversation(currentUser.id, currentContactId, emailNotifOn) : `
             <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--color-text-light)">
               <div style="text-align:center">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto var(--space-4);opacity:0.3">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-                <p>Sélectionnez une conversation</p>
+                <div style="width:80px;height:80px;border-radius:var(--radius-full);background:var(--color-bg);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-5)">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </div>
+                <p style="font-weight:var(--font-weight-medium);margin-bottom:var(--space-2)">Selectionnez une conversation</p>
+                <p style="font-size:var(--font-size-xs);color:var(--color-text-light);max-width:280px">Choisissez un contact dans la liste pour commencer a echanger.</p>
               </div>
             </div>
           `}
@@ -91,11 +136,12 @@ const Chat = (() => {
   /**
    * Rendu du contenu d'une conversation
    */
-  function renderConversation(userId, contactId) {
+  function renderConversation(userId, contactId, emailNotifOn) {
     const contact = CedeoStore.getUser(contactId);
     if (!contact) return '<div style="padding:var(--space-4)">Utilisateur introuvable</div>';
 
     const messages = CedeoStore.getConversation(userId, contactId);
+    const currentUser = CedeoStore.getCurrentUser();
 
     // Grouper les messages par date
     let lastDate = '';
@@ -121,23 +167,42 @@ const Chat = (() => {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
         <div class="avatar avatar-sm" style="background-color:${Utils.getAvatarColor(contact.id)}">${Utils.getInitials(contact.firstName, contact.lastName)}</div>
-        <div style="flex:1">
-          <div style="font-weight:var(--font-weight-medium);font-size:var(--font-size-sm)">${Utils.escapeHtml(contact.firstName)} ${Utils.escapeHtml(contact.lastName)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:var(--font-weight-semibold);font-size:var(--font-size-sm)">${Utils.escapeHtml(contact.firstName)} ${Utils.escapeHtml(contact.lastName)}</div>
+          <div style="font-size:var(--font-size-xs);color:var(--color-text-light)">${contact.agencyId ? (Utils.getAgencyById(contact.agencyId)?.shortName || '') : ''}</div>
         </div>
-        <button class="btn btn-icon btn-sm btn-ghost" onclick="App.navigate('/profile/${contact.id}')">
+        <button class="btn btn-icon btn-sm btn-ghost" onclick="App.navigate('/profile/${contact.id}')" title="Voir le profil">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
         </button>
       </div>
+
+      <!-- Bandeau notification email -->
+      <div class="chat-email-notif-banner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>
+        <span>Recevoir un email sur ma boite pro quand un message est recu</span>
+        <div class="chat-email-toggle">
+          <div class="toggle-switch">
+            <input type="checkbox" id="email-notif-toggle" ${emailNotifOn ? 'checked' : ''}>
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="chat-messages" id="chat-messages">
         ${messages.length === 0 ? `
-          <div style="text-align:center;color:var(--color-text-light);padding:var(--space-8)">
-            <p>Commencez la conversation avec ${Utils.escapeHtml(contact.firstName)}</p>
+          <div style="text-align:center;padding:var(--space-10) var(--space-4)">
+            <div style="width:56px;height:56px;border-radius:var(--radius-full);background:var(--color-primary-bg);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <p style="font-weight:var(--font-weight-medium);color:var(--color-text);margin-bottom:var(--space-1)">Demarrez la conversation</p>
+            <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary)">Envoyez un premier message a ${Utils.escapeHtml(contact.firstName)} pour organiser votre covoiturage.</p>
           </div>
         ` : messagesHtml}
       </div>
+
       <div class="chat-input-area">
-        <input class="form-input" type="text" id="chat-input" placeholder="Votre message..." autocomplete="off">
-        <button class="btn btn-primary btn-icon" id="chat-send-btn">
+        <input class="form-input" type="text" id="chat-input" placeholder="Ecrivez votre message..." autocomplete="off">
+        <button class="btn btn-primary btn-icon" id="chat-send-btn" title="Envoyer">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
@@ -145,7 +210,7 @@ const Chat = (() => {
   }
 
   /**
-   * Initialise les événements de la conversation après le rendu
+   * Initialise les evenements de la conversation apres le rendu
    */
   function initConversationEvents(userId, contactId) {
     const input = document.getElementById('chat-input');
@@ -157,6 +222,19 @@ const Chat = (() => {
     // Scroll en bas
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Toggle notification email
+    const emailToggle = document.getElementById('email-notif-toggle');
+    if (emailToggle) {
+      emailToggle.addEventListener('change', () => {
+        setEmailNotifEnabled(userId, emailToggle.checked);
+        if (emailToggle.checked) {
+          window.App.showToast('Notifications email activees. Vous recevrez un email sur votre boite pro a chaque nouveau message.', 'success');
+        } else {
+          window.App.showToast('Notifications email desactivees.', 'info');
+        }
+      });
     }
 
     // Envoi de message
@@ -181,6 +259,16 @@ const Chat = (() => {
         icon: 'message'
       });
 
+      // Simuler l'envoi d'email si la notification est activee pour le destinataire
+      if (isEmailNotifEnabled(contactId)) {
+        const recipient = CedeoStore.getUser(contactId);
+        if (recipient) {
+          console.log(`[CEDEO Ride] Email envoye a ${recipient.email} : Nouveau message de ${currentUser.firstName} ${currentUser.lastName}`);
+          // En production, cet appel serait remplace par un vrai appel API
+          // fetch('/api/notify/email', { method: 'POST', body: JSON.stringify({ to: recipient.email, subject: 'Nouveau message sur CEDEO Ride', body: text }) });
+        }
+      }
+
       input.value = '';
 
       // Ajouter le message au DOM sans re-render complet
@@ -199,6 +287,9 @@ const Chat = (() => {
       if (e.key === 'Enter') sendMessage();
     });
 
+    // Focus auto sur l'input
+    input.focus();
+
     // Bouton retour (mobile)
     document.getElementById('chat-back-btn')?.addEventListener('click', () => {
       window.App.navigate('/messages');
@@ -206,17 +297,17 @@ const Chat = (() => {
   }
 
   /**
-   * Démarre le polling des messages (toutes les 3 secondes)
+   * Demarre le polling des messages (toutes les 3 secondes)
    */
   function startMessageCheck(userId, contactId) {
     stopMessageCheck();
     if (!contactId) return;
 
-    // Initialiser les événements
+    // Initialiser les evenements
     setTimeout(() => initConversationEvents(userId, contactId), 100);
 
     messageCheckInterval = setInterval(() => {
-      // Vérifier les nouveaux messages
+      // Verifier les nouveaux messages
       if (contactId) {
         CedeoStore.markMessagesAsRead(contactId, userId);
       }
@@ -224,7 +315,7 @@ const Chat = (() => {
   }
 
   /**
-   * Arrête le polling
+   * Arrete le polling
    */
   function stopMessageCheck() {
     if (messageCheckInterval) {
